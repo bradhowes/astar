@@ -1,4 +1,4 @@
-[![Build Badge]][Build] [![License Badge]][License] [![Swift Badge]][Swift]
+![Swift](https://github.com/bradhowes/AStar/workflows/Swift/badge.svg) [![License Badge]][License] [![Swift Badge]][Swift]
 
 # AStar - an A* Library in Swift
 
