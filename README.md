@@ -28,6 +28,13 @@ let path = AStar.find(mapOracle: mapOracle, considerDiagonalPaths: true,
                       start: start, end: end)
 ```
 
+You supply something that implements the `MapOracle` protocol like the `MapData` above. You decide if diagonal paths are acceptable,
+and provide a way to estimate the cost of moving from a given point on the map to the end point (the _heuristic cost_). The start and end 
+points complete the `find` request.
+
+You get back an optional array of `Coord2D` values. If `nil` then there was no path to be found. Otherwise, the array will have the map
+coordinates of the path that was found, starting at `start` and ending with `end`.
+
 Here is the visual representation of the map with the found path. The starting position appears as a red flag (🚩) and the end position is a 
 checkered flag (🏁). The path in between these two points contains an adventurer (🏃).
 
@@ -43,13 +50,6 @@ print(image)
 🌊🌲🗻🌲🏃🏃🗻🗻
 🌊🌲🌲🌲🌲🌲🗻🌲
 ```
-
-You supply something that implements the `MapOracle` protocol like the `MapData` above. You decide if diagonal paths are acceptable,
-and provide a way to estimate the cost of moving from a given point on the map to the end point (the _heuristic cost_). The start and end 
-points complete the `find` request.
-
-You get back an optional array of `Coord2D` values. If `nil` then there was no path to be found. Otherwise, the array will have the map
-coordinates of the path that was found, starting at `start` and ending with `end`.
 
 [License Badge]: https://img.shields.io/github/license/bradhowes/AStar.svg?color=yellow "MIT License"
 [License]: https://github.com/bradhowes/AStar/blob/master/LICENSE.txt
