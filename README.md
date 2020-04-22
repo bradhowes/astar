@@ -51,11 +51,8 @@ points complete the `find` request.
 You get back an optional array of `Coord2D` values. If `nil` then there was no path to be found. Otherwise, the array will have the map
 coordinates of the path that was found, starting at `start` and ending with `end`.
 
-[Build Badge]: https://img.shields.io/github/workflow/status/bradhowes/AStar/Swift%20Package.svg "Build"
-[Build]: https://github.com/bradhowes/AStar/actions
-
 [License Badge]: https://img.shields.io/github/license/bradhowes/AStar.svg?color=yellow "MIT License"
 [License]: https://github.com/bradhowes/AStar/blob/master/LICENSE.txt
 
-[Swift Badge]: https://img.shields.io/badge/swift-5-orange.svg "Swift 5"
-[Swift]: https://swift.org/blog/swift-5-released/
+[Swift Badge]: https://img.shields.io/badge/swift-5-orange.svg "Swift 5.2"
+[Swift]: https://swift.org/blog/swift-5-2-released/
