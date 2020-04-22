@@ -1,8 +1,8 @@
 import Foundation
 
 /**
- Helper class that keeps track of the costs involved in reaching a given position in the map. Maintains a linked list of nodes that make up a path to the starting
- position.
+ Helper class that keeps track of the costs involved in reaching a given position in the map. Maintains a linked list
+ of nodes that make up a path to the starting position.
  */
 internal final class Node<CostType: CostNumeric> {
 
@@ -84,6 +84,6 @@ extension Node {
 }
 
 extension Node: Comparable {
-    static func ==(left: Node, right: Node) -> Bool { left.totalCost == right.totalCost }
-    static func  <(left: Node, right: Node) -> Bool { left.totalCost < right.totalCost }
+    static func == (left: Node, right: Node) -> Bool { left.totalCost == right.totalCost }
+    static func < (left: Node, right: Node) -> Bool { left.totalCost < right.totalCost }
 }

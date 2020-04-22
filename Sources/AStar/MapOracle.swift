@@ -17,7 +17,8 @@ public protocol MapOracle {
     func isVisitable(position: Coord2D) -> Bool
 
     /**
-     Determine the cost of the given position when added to the path. This is the real cost of the location, and not the heuristic cost .
+     Determine the cost of the given position when added to the path. This is the real cost of the location, and not
+     the heuristic cost .
 
      - parameter position: the location to check
      - returns: cost of the position

@@ -4,13 +4,15 @@
 import Foundation
 
 /**
- Contains the functionality for performing A* path searches. There is only one public static method: `find`. It creates a new instance and then performs the search.
+ Contains the functionality for performing A* path searches. There is only one public static method: `find`. It creates
+ a new instance and then performs the search.
  */
 public final class AStar<CostType: CostNumeric> {
 
     typealias NodeType = Node<CostType>
 
-    /// Function type that returns the heuristic cost for moving from a given position to an end goal (the method must have knowledge of the end goal)
+    /// Function type that returns the heuristic cost for moving from a given position to an end goal (the method must
+    ///  have knowledge of the end goal)
     public typealias HeuristicCostCalulator = (Coord2D) -> CostType
 
     /**
@@ -18,7 +20,8 @@ public final class AStar<CostType: CostNumeric> {
 
      - parameter mapOracle: the map to to use for determining valid paths
      - parameter considerDiagonalPaths: if true, allow traveling diagonally from one position to another
-     - parameter heuristicCostCalulator: function that returns the heuristic cost between a given position and the end goal
+     - parameter heuristicCostCalulator: function that returns the heuristic cost between a given position and the end
+     goal
      - parameter start: the starting position in the map
      - parameter end: the end (goal) position in the map
      - returns: the array of positions that make up the lowest-cost path, or nil of none exists

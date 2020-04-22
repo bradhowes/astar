@@ -28,7 +28,7 @@ final class PriorityQueueTests: XCTestCase {
     }
 
     func testMaxQueue() {
-        var pq = PriorityQueue.MaxOrdering(1, 3, 5, 7, 9, 2, 4, 6, 8)
+        var pq = PriorityQueue.maxOrdering(1, 3, 5, 7, 9, 2, 4, 6, 8)
         XCTAssertEqual(pq.count, 9)
         XCTAssertEqual(pq.pop()!, 9)
         XCTAssertEqual(pq.pop()!, 8)
@@ -44,7 +44,7 @@ final class PriorityQueueTests: XCTestCase {
     }
 
     func testPush() {
-        var pq = PriorityQueue.MinOrdering(1, 3, 5, 7, 9)
+        var pq = PriorityQueue.minOrdering(1, 3, 5, 7, 9)
         pq.push(2)
         XCTAssertEqual(pq.count, 6)
         XCTAssertEqual(pq.pop()!, 1)
@@ -57,14 +57,14 @@ final class PriorityQueueTests: XCTestCase {
     }
 
     func testRemoveAll() {
-        var pq = PriorityQueue.MinOrdering(1, 3, 5, 7, 9)
+        var pq = PriorityQueue.minOrdering(1, 3, 5, 7, 9)
         XCTAssertEqual(pq.count, 5)
         pq.removeAll()
         XCTAssertEqual(pq.count, 0)
     }
 
     func testContains() {
-        let pq = PriorityQueue.MinOrdering(1, 3, 5, 7, 9)
+        let pq = PriorityQueue.minOrdering(1, 3, 5, 7, 9)
         XCTAssertTrue(pq.contains(5))
         XCTAssertFalse(pq.contains(6))
     }
@@ -84,7 +84,7 @@ final class PriorityQueueTests: XCTestCase {
     }
 
     func testRemove() {
-        let comp = PriorityQueue<Int>.MinComp
+        let comp = PriorityQueue<Int>.minComp
         var pq = PriorityQueue(1, 9, 8, 7, compare: comp);
         XCTAssertEqual(pq.count, 4)
         XCTAssertEqual(pq.remove(element: 8), 8)

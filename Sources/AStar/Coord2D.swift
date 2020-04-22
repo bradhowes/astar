@@ -3,6 +3,7 @@
 
 import Foundation
 
+// swiftlint:disable identifier_name
 /**
  2D map coordinate.
  */
@@ -12,5 +13,5 @@ public struct Coord2D: Equatable, Hashable {
 }
 
 extension Coord2D {
-    static func +(left: Coord2D, right: Coord2D) -> Coord2D { Coord2D(x: left.x + right.x, y: left.y + right.y) }
+    static func + (left: Coord2D, right: Coord2D) -> Coord2D { Coord2D(x: left.x + right.x, y: left.y + right.y) }
 }

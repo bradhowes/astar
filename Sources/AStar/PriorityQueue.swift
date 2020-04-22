@@ -4,8 +4,8 @@
 import Foundation
 
 /**
- Generic container that maintains a heap: all parent nodes but the last contain 2 children (last parent can contain 1 child). Each parent appears in the container before
- its children, ordered by a provided function.
+ Generic container that maintains a binary heap: all parent nodes but the last contain 2 children (last parent can
+ contain 1 child). Each parent appears in the container before its children, ordered by a provided function.
  */
 public struct PriorityQueue<T> {
     public typealias ElementType = T
@@ -23,7 +23,7 @@ public struct PriorityQueue<T> {
     private var heap: [ElementType] = []
 
     /**
-     Intialize new instance. Populates queue with any given items (optional)
+     Intialize new instance..
      - parameter args: zero or more items to add to queue
      - parameter compare: function that determines ordering of items in the queue
      elements in ascending order
@@ -32,6 +32,7 @@ public struct PriorityQueue<T> {
         self.isOrdered = compare
         args.forEach { push($0) }
     }
+
     /**
      Intialize new instance.
 
@@ -44,7 +45,7 @@ public struct PriorityQueue<T> {
     }
 
     /**
-     Add a new item to the queue while maintaining heap property.
+     Add a new item to the queue while maintaining binary heap property.
      - parameter item: the new item to add
      */
     public mutating func push(_ item: ElementType) {
@@ -73,7 +74,7 @@ public struct PriorityQueue<T> {
 
 extension PriorityQueue {
 
-    public typealias ForEachBlockType = (ElementType)->()
+    public typealias ForEachBlockType = (ElementType) -> Void
 
     /**
      Allow destructive iteration over the queue, handing the next ordered element the queue to the given closure.
@@ -133,16 +134,14 @@ extension PriorityQueue where ElementType: Equatable {
      - returns: the item if it was moved or nil if item was not found or its position did not change
      */
     public mutating func update(element: ElementType) -> ElementType? {
-        for (index, item) in heap.enumerated() {
-            if item == element {
-                heap[index] = element
+        for (index, item) in heap.enumerated() where item == element {
+            heap[index] = element
 
-                // Assume that the new entry is different than the old one. Try to rebalance upward first. If that did
-                // not induce a swap, then try and rebalance downward.
-                //
-                if !siftDown(index: index) { _ = siftUp(index: index) }
-                return item
-            }
+            // Assume that the new entry is different than the old one. Try to rebalance upward first. If that did
+            // not induce a swap, then try and rebalance downward.
+            //
+            if !siftDown(index: index) { _ = siftUp(index: index) }
+            return item
         }
         return nil
     }
@@ -153,13 +152,11 @@ extension PriorityQueue where ElementType: Equatable {
      - returns: the element that was removed or nil if not found
      */
     public mutating func remove(element: ElementType) -> ElementType? {
-        for (index, item) in heap.enumerated() {
-            if item == element {
-                heap.swapAt(index, heap.endIndex - 1)
-                heap.removeLast()
-                _ = siftDown(index: index)
-                return item
-            }
+        for (index, item) in heap.enumerated() where item == element {
+            heap.swapAt(index, heap.endIndex - 1)
+            heap.removeLast()
+            _ = siftDown(index: index)
+            return item
         }
         return nil
     }
@@ -174,7 +171,7 @@ extension PriorityQueue where ElementType: Comparable {
      - parameter rhs: second value to compare
      - returns: true if first value >= second value
      */
-    public static func MaxComp(_ lhs: ElementType, _ rhs: ElementType) -> Bool { lhs >= rhs }
+    public static func maxComp(_ lhs: ElementType, _ rhs: ElementType) -> Bool { lhs >= rhs }
 
     /**
      Generic comparison function for Comparable types that provides for min value ordering
@@ -183,7 +180,7 @@ extension PriorityQueue where ElementType: Comparable {
      - parameter rhs: second value to compare
      - returns: true if first value <= second value
      */
-    public static func MinComp(_ lhs: ElementType, _ rhs: ElementType) -> Bool { lhs <= rhs }
+    public static func minComp(_ lhs: ElementType, _ rhs: ElementType) -> Bool { lhs <= rhs }
 
     /**
      Factory method for creating a PriorityQueue with max-value ordering
@@ -191,7 +188,7 @@ extension PriorityQueue where ElementType: Comparable {
      - parameter args: values to add to the queue
      - returns: the new PriorityQueue instance
      */
-    static public func MaxOrdering(_ args: ElementType...) -> PriorityQueue { PriorityQueue(MaxComp, values: args) }
+    static public func maxOrdering(_ args: ElementType...) -> PriorityQueue { PriorityQueue(maxComp, values: args) }
 
     /**
      Factory method for creating a PriorityQueue with min-value ordering
@@ -199,7 +196,7 @@ extension PriorityQueue where ElementType: Comparable {
      - parameter args: values to add to the queue
      - returns: the new PriorityQueue instance
      */
-    static public func MinOrdering(_ args: ElementType...) -> PriorityQueue { PriorityQueue(MinComp, values: args) }
+    static public func minOrdering(_ args: ElementType...) -> PriorityQueue { PriorityQueue(minComp, values: args) }
 
     /**
      Convenience constructor for a PriorityQueue with min-value ordering.
@@ -207,7 +204,7 @@ extension PriorityQueue where ElementType: Comparable {
      - parameter args: initial values to add to the queue
      */
     public init(_ args: ElementType...) {
-        isOrdered = Self.MinComp
+        isOrdered = Self.minComp
         args.forEach { push($0) }
     }
 }
