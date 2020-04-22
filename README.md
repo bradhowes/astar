@@ -24,6 +24,12 @@ func distanceToEnd(position: Coord2D) -> Int { abs(position.x - end.x) + abs(pos
 let path = AStar.find(mapOracle: mapOracle, considerDiagonalPaths: true,
                       heuristicCostCalulator: distancToEnd,
                       start: start, end: end)
+```
+
+Here is the visual representation of the map with the found path. The starting position appears as a red flag (🚩) and the end position is a 
+checkered flag (🏁). The path in between these two points contains an adventurer (🏃).
+
+```
 let image = mapData.asString(path: path!)
 print(image)
 🌊🌲🌲🌲🚩🌲🌲🌲
