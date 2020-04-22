@@ -54,5 +54,5 @@ coordinates of the path that was found, starting at `start` and ending with `end
 [License Badge]: https://img.shields.io/github/license/bradhowes/AStar.svg?color=yellow "MIT License"
 [License]: https://github.com/bradhowes/AStar/blob/master/LICENSE.txt
 
-[Swift Badge]: https://img.shields.io/badge/swift-5-orange.svg "Swift 5.2"
+[Swift Badge]: https://img.shields.io/badge/swift-5.2-orange.svg "Swift 5.2"
 [Swift]: https://swift.org/blog/swift-5-2-released/
