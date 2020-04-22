@@ -15,7 +15,7 @@ let mapData = MapData(data: [
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
     [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
-    [.🌲, .🌲, .🗻, .🌲, .🗻, .🗻, .🌲, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
     [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
 ])
@@ -46,10 +46,32 @@ print(image)
 🌲🌲🌲🌲🗻🌲🏃🌲
 🌲🌲🗻🗻🗻🗻🗻🏃
 🌲🌲🗻🌲🏁🗻🏃🌊
-🌲🌲🗻🏃🗻🗻🏃🌊
-🌊🌲🗻🌲🏃🏃🗻🗻
+🌲🌲🗻🌲🗻🏃🌲🌊
+🌊🌲🗻🌲🌲🌲🗻🗻
 🌊🌲🌲🌲🌲🌲🗻🌲
 ```
+
+The map contains three different terrain elements, each with their own cost for travelling into their square:
+
+* tree (1)
+* wave (2)
+* boulder (∞)
+
+The algorithm minimizes the cost of traveling over terrain elements while at the same time trying to keep to the shortest path
+to the goal. For comparison, here is what the algorithm found when constrained to not use diagonal moves:
+
+```
+🌊🌲🌲🌲🚩🌲🌲🌲
+🌊🌲🌲🏃🏃🌲🌲🌲
+🌲🏃🏃🏃🗻🌲🌲🌲
+🌲🏃🗻🗻🗻🗻🗻🌲
+🌲🏃🗻🏃🏁🗻🌊🌊
+🌲🏃🗻🏃🗻🌲🌲🌊
+🌊🏃🗻🏃🌲🌲🗻🗻
+🌊🏃🏃🏃🌲🌲🗻🌲
+
+```
+
 
 [License Badge]: https://img.shields.io/github/license/bradhowes/AStar.svg?color=yellow "MIT License"
 [License]: https://github.com/bradhowes/AStar/blob/master/LICENSE.txt
