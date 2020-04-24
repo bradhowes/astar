@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import PriorityQueue
 
 /**
  Contains the functionality for performing A* path searches. There is only one public static method: `find`. It creates
