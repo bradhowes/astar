@@ -1,7 +1,4 @@
 // Copyright © 2020 Brad Howes. All rights reserved.
-//
-
-import Foundation
 
 // swiftlint:disable identifier_name
 /**

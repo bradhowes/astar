@@ -1,4 +1,4 @@
-import Foundation
+// Copyright © 2020 Brad Howes. All rights reserved.
 
 /**
  Helper class that keeps track of the costs involved in reaching a given position in the map. Maintains a linked list
@@ -6,14 +6,23 @@ import Foundation
  */
 internal final class Node<CostType: CostNumeric> {
 
+    /// Lcation of this node in a map
     let position: Coord2D
 
     /// The total cost of this node: the known cost from the start + the estimated cost to the end
     private(set) var totalCost: CostType = 0
 
+    /// How must did it cost to enter this location
     private let positionCost: CostType
+
+    /// The link to the previous node in the path of nodes
     private var parent: Node?
+
+    /// If true, allow reparenting. This is allowed up until a node `lock` is invoked.
     private var canReparent: Bool = true
+
+    /// This is the known cost of the path to reach this node. Anything beyond is a heuristic cost, up until this is
+    /// locked.
     private var knownCost: CostType = 0
 
     /**

@@ -1,7 +1,4 @@
 // Copyright © 2020 Brad Howes. All rights reserved.
-//
-
-import Foundation
 
 /**
  Interface for what AStar needs from a map.
@@ -9,7 +6,7 @@ import Foundation
 public protocol MapOracle {
 
     /**
-     Determine if the given positiion in the map can be part of a path.
+     Determine if the given position in the map can be part of a path.
 
      - parameter position: the location to check
      - returns: true if position is valid and not an obstacle
