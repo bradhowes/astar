@@ -5,13 +5,15 @@ import PriorityQueue
 /**
  Contains the functionality for performing A* path searches. There is only one public static method: `find`. It creates
  a new instance and then performs the search.
+
+ The `OracleType` generic parameter provides the `CostType` type that determines how costs are stored (Int, Float, etc.)
  */
 public final class AStar<OracleType> where OracleType: MapOracle {
 
     typealias NodeType = Node<OracleType.CostType>
 
     /// Function type that returns the heuristic cost for moving from a given position to an end goal (the method must
-    ///  have knowledge of the end goal)
+    /// have knowledge of the end goal)
     public typealias HeuristicCostCalculator = (Coord2D) -> OracleType.CostType
 
     /**
