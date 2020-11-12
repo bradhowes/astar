@@ -10,7 +10,7 @@ internal final class Node<CostType: CostNumeric> {
     let position: Coord2D
 
     /// The total cost of this node: the known cost from the start + the estimated cost to the end
-    private(set) var totalCost: CostType = 0
+    private(set) var totalCost: CostType = .zero
 
     /// How must did it cost to enter this location
     private let positionCost: CostType
@@ -23,7 +23,7 @@ internal final class Node<CostType: CostNumeric> {
 
     /// This is the known cost of the path to reach this node. Anything beyond is a heuristic cost, up until this is
     /// locked.
-    private var knownCost: CostType = 0
+    private var knownCost: CostType = .zero
 
     /**
      Create a new root node (one without a parent)
@@ -33,7 +33,7 @@ internal final class Node<CostType: CostNumeric> {
      */
     init(position: Coord2D, heuristicRemaining: CostType) {
         self.position = position
-        self.positionCost = 0
+        self.positionCost = .zero
     }
 
     /**

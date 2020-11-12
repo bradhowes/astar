@@ -1,12 +1,11 @@
 // Copyright © 2020 Brad Howes. All rights reserved.
 
 /**
- Interface for a type that will hold the cost of an AStar node. Since nodes will be ordered by their cost, we need to
- have `<` operator.
+ Interface for a type that will hold the cost of an AStar node. We need to be able to compare them and
+ to represent a zero cost.
  */
-public protocol CostNumeric: SignedNumeric {
-    static func < (lhs: Self, rhs: Self) -> Bool
-}
+
+public protocol CostNumeric: SignedNumeric, Comparable {}
 
 extension Int: CostNumeric {}
 extension Float: CostNumeric {}

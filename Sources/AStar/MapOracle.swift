@@ -4,6 +4,7 @@
  Interface for what AStar needs from a map.
  */
 public protocol MapOracle {
+    associatedtype CostType: CostNumeric
 
     /**
      Determine if the given position in the map can be part of a path.
@@ -15,10 +16,10 @@ public protocol MapOracle {
 
     /**
      Determine the cost of the given position when added to the path. This is the real cost of the location, and not
-     the heuristic cost .
+     the heuristic cost.
 
      - parameter position: the location to check
      - returns: cost of the position
      */
-    func cost<T: CostNumeric>(position: Coord2D) -> T
+    func cost(position: Coord2D) -> CostType
 }

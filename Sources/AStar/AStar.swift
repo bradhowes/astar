@@ -6,13 +6,13 @@ import PriorityQueue
  Contains the functionality for performing A* path searches. There is only one public static method: `find`. It creates
  a new instance and then performs the search.
  */
-public final class AStar<CostType: CostNumeric> {
+public final class AStar<OracleType> where OracleType: MapOracle {
 
-    typealias NodeType = Node<CostType>
+    typealias NodeType = Node<OracleType.CostType>
 
     /// Function type that returns the heuristic cost for moving from a given position to an end goal (the method must
     ///  have knowledge of the end goal)
-    public typealias HeuristicCostCalulator = (Coord2D) -> CostType
+    public typealias HeuristicCostCalculator = (Coord2D) -> OracleType.CostType
 
     /**
      Attempt to find the lowest-cost path from start to end positions of a given map.
@@ -25,8 +25,8 @@ public final class AStar<CostType: CostNumeric> {
      - parameter end: the end (goal) position in the map
      - returns: the array of positions that make up the lowest-cost path, or nil of none exists
      */
-    public static func find(mapOracle: MapOracle, considerDiagonalPaths: Bool,
-                            heuristicCostCalulator: @escaping HeuristicCostCalulator,
+    public static func find(mapOracle: OracleType, considerDiagonalPaths: Bool,
+                            heuristicCostCalulator: @escaping HeuristicCostCalculator,
                             start: Coord2D, end: Coord2D) -> [Coord2D]? {
         guard start != end else { return nil }
         guard mapOracle.isVisitable(position: start) else { return nil }
@@ -35,14 +35,14 @@ public final class AStar<CostType: CostNumeric> {
                      heuristicCostCalulator: heuristicCostCalulator).find(start: start, end: end)
     }
 
-    private let mapOracle: MapOracle
-    private let heuristicCostCalulator: HeuristicCostCalulator
+    private let mapOracle: OracleType
+    private let heuristicCostCalulator: HeuristicCostCalculator
     private let neighborOffsets: [Coord2D]
     private var openQueue = PriorityQueue<NodeType>()
     private var nodeCache = [Coord2D: NodeType]()
 
-    private init(mapOracle: MapOracle, considerDiagonalPaths: Bool,
-                 heuristicCostCalulator: @escaping HeuristicCostCalulator) {
+    private init(mapOracle: OracleType, considerDiagonalPaths: Bool,
+                 heuristicCostCalulator: @escaping HeuristicCostCalculator) {
         self.mapOracle = mapOracle
         self.heuristicCostCalulator = heuristicCostCalulator
 
