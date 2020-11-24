@@ -1,23 +1,15 @@
 name: CI
-
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
 jobs:
   build:
-
     runs-on: macos-latest
-
     steps:
-    - name: Swift Setup
-      uses: YOCKOW/Action-setup-swift@v1.1.2
-      with:
-        swift-version: '5.2'
     - uses: actions/checkout@v2
-    - name: Build
-      run: swift build -v
+    - name: Generate xcodeproj
+      run: swift package generate-xcodeproj
     - name: Run tests
-      run: swift test -v
+      run: xcodebuild test -destination 'name=iPhone 11' -scheme 'AStar'
