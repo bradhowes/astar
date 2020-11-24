@@ -1,4 +1,7 @@
-![Swift](https://github.com/bradhowes/AStar/workflows/CI/badge.svg) [![Swift Badge]][Swift] [![License Badge]][License]
+[![Swift](https://github.com/bradhowes/AStar/workflows/CI/badge.svg)]()
+[![Swift Badge]][Swift]
+[![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
+[![License Badge]][License]
 
 # AStar - an A* Library in Swift
 
