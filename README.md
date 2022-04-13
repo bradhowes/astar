@@ -11,7 +11,7 @@ as well as the cost of using a position. Example of a `MapOracle` can be found i
 
 The AStar API is very basic. There is just the static `find` method. Here is an example of it being used:
 
-```
+```swift
 let mapData = MapData(data: [
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
@@ -32,16 +32,16 @@ let path = AStar.find(mapOracle: mapOracle, considerDiagonalPaths: true,
 ```
 
 You supply something that implements the `MapOracle` protocol like the `MapData` above. You decide if diagonal paths are acceptable,
-and provide a way to estimate the cost of moving from a given point on the map to the end point (the _heuristic cost_). The start and end 
+and provide a way to estimate the cost of moving from a given point on the map to the end point (the _heuristic cost_). The start and end
 points complete the `find` request.
 
 You get back an optional array of `Coord2D` values. If `nil` then there was no path to be found. Otherwise, the array will have the map
 coordinates of the path that was found, starting at `start` and ending with `end`.
 
-Here is the visual representation of the map with the found path. The starting position appears as a red flag (🚩) and the end position is a 
+Here is the visual representation of the map with the found path. The starting position appears as a red flag (🚩) and the end position is a
 checkered flag (🏁). The path in between these two points contains an adventurer (🏃).
 
-```
+```swift
 let image = mapData.asString(path: path!)
 print(image)
 🌊🌲🌲🌲🚩🌲🌲🌲
@@ -63,7 +63,7 @@ The map contains three different terrain elements, each with their own cost for 
 The algorithm minimizes the cost of traveling over terrain elements while at the same time trying to keep to the shortest path
 to the goal. For comparison, here is what the algorithm found when constrained to not use diagonal moves:
 
-```
+```swift
 🌊🌲🌲🌲🚩🌲🌲🌲
 🌊🌲🌲🏃🏃🌲🌲🌲
 🌲🏃🏃🏃🗻🌲🌲🌲
