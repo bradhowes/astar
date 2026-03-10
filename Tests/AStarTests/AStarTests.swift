@@ -17,7 +17,7 @@ struct AStarTests {
     [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
     [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
     [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
-    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
+    [.🌊, .🌊, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
   ])
 
   func calcHeuristicCostFloat(position: Coord2D) -> Float { Float(abs(position.x - end.x) + abs(position.y - end.y)) }
@@ -108,7 +108,7 @@ struct AStarTests {
 🌲🌲🗻🌲🏁🗻🏃🌊
 🌲🌲🗻🌲🗻🏃🌲🌊
 🌊🌲🗻🌲🌲🌲🗻🗻
-🌊🌲🌲🌲🌲🌲🗻🌲
+🌊🌊🌲🌲🌲🌲🗻🌲
 
 """
     #expect(image == expected)
