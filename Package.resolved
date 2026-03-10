@@ -1,0 +1,15 @@
+{
+  "originHash" : "8020f8a40fe0b53b9cdbca507212b1d008661291cb9dbb4b3ee4670dd4926aa5",
+  "pins" : [
+    {
+      "identity" : "priorityqueue",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bradhowes/PriorityQueue",
+      "state" : {
+        "revision" : "44a1b57f9ee62fd5d5a208cccdde55c71ae0cb4d",
+        "version" : "1.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

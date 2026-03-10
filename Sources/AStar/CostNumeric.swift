@@ -1,4 +1,4 @@
-// Copyright © 2020 Brad Howes. All rights reserved.
+// Copyright © 2020-2026 Brad Howes. All rights reserved.
 
 /**
  Interface for a type that will hold the cost of an AStar node. We need to be able to compare them and

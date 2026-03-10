@@ -1,4 +1,4 @@
-// Copyright © 2020 Brad Howes. All rights reserved.
+// Copyright © 2020-2026 Brad Howes. All rights reserved.
 
 /**
  Interface for what AStar needs from a map.
@@ -6,20 +6,20 @@
 public protocol MapOracle {
     associatedtype CostType: CostNumeric
 
-    /**
-     Determine if the given position in the map can be part of a path.
+  /**
+   Determine if the given position in the map can be part of a path.
 
-     - parameter position: the location to check
-     - returns: true if position is valid and not an obstacle
-     */
-    func isVisitable(position: Coord2D) -> Bool
+   - parameter position: the location to check
+   - returns: true if position is valid and not an obstacle
+   */
+  func isVisitable(position: Coord2D) -> Bool
 
-    /**
-     Determine the cost of the given position when added to the path. This is the real cost of the location, and not
-     the heuristic cost.
+  /**
+   Determine the cost of the given position when added to the path. This is the real cost of the location, and not
+   the heuristic cost.
 
-     - parameter position: the location to check
-     - returns: cost of the position
-     */
-    func cost(position: Coord2D) -> CostType
+   - parameter position: the location to check
+   - returns: cost of the position
+   */
+  func cost(position: Coord2D) -> CostType
 }

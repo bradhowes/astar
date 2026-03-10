@@ -1,46 +1,52 @@
-import XCTest
+import Testing
 
 @testable import AStar
 
-final class AStarTests: XCTestCase {
+@Suite
+struct AStarTests {
 
-    let end = Coord2D(x: 4, y: 4)
+  let end = Coord2D(x: 4, y: 4)
 
-    func calcHeuristicCost(position: Coord2D) -> Int { abs(position.x - end.x) + abs(position.y - end.y) }
+  func calcHeuristicCostInt(position: Coord2D) -> Int { abs(position.x - end.x) + abs(position.y - end.y) }
 
-    let mapData = MapData<Int>(data: [
-        [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
-        [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
-        [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
-        [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
-        [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
-        [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
-        [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
-        [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
-    ])
+  let mapDataIntCost = MapData<Int>(data: [
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
+    [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
+    [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
+    [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
+  ])
 
-    func calcHeuristicCostFloat(position: Coord2D) -> Float { Float(abs(position.x - end.x) + abs(position.y - end.y)) }
+  func calcHeuristicCostFloat(position: Coord2D) -> Float { Float(abs(position.x - end.x) + abs(position.y - end.y)) }
 
-    let mapDataFloatCost = MapData<Float>(data: [
-        [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
-        [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
-        [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
-        [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
-        [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
-        [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
-        [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
-        [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
-    ])
+  let mapDataFloatCost = MapData<Float>(data: [
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
+    [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
+    [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
+    [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
+  ])
 
-    func testNoDiagonals() {
-        let start = Coord2D(x: 4, y: 0)
-        let path = AStar<MapData<Int>>.find(mapOracle: mapData, considerDiagonalPaths: false,
-                                            heuristicCostCalulator: calcHeuristicCost,
-                                            start: start, end: end)
-        XCTAssertNotNil(path)
+  @Test
+  func noDiagonals() throws {
+    let start = Coord2D(x: 4, y: 0)
+    let path = try AStar<MapData<Int>>.find(
+      mapOracle: mapDataIntCost,
+      considerDiagonalPaths: false,
+      heuristicCostCalulator: calcHeuristicCostInt,
+      start: start,
+      end: end
+    )
+    #expect(path != nil)
 
-        let image = mapData.asString(path: path!)
-        let expected = """
+    let image = mapDataIntCost.asString(path: path!)
+    let expected = """
 🌊🌲🌲🌲🚩🌲🌲🌲
 🌊🌲🌲🏃🏃🌲🌲🌲
 🌲🏃🏃🏃🗻🌲🌲🌲
@@ -51,18 +57,23 @@ final class AStarTests: XCTestCase {
 🌊🏃🏃🏃🌲🌲🗻🌲
 
 """
-        XCTAssertEqual(image, expected)
-    }
+    #expect(image == expected)
+  }
 
-    func testNoDiagonalsFloat() {
-        let start = Coord2D(x: 4, y: 0)
-        let path = AStar<MapData<Float>>.find(mapOracle: mapDataFloatCost, considerDiagonalPaths: false,
-                                              heuristicCostCalulator: calcHeuristicCostFloat,
-                                              start: start, end: end)
-        XCTAssertNotNil(path)
+  @Test
+  func noDiagonalsFloat() throws {
+    let start = Coord2D(x: 4, y: 0)
+    let path = try AStar<MapData<Float>>.find(
+      mapOracle: mapDataFloatCost,
+      considerDiagonalPaths: false,
+      heuristicCostCalulator: calcHeuristicCostFloat,
+      start: start,
+      end: end
+    )
+    #expect(path != nil)
 
-        let image = mapData.asString(path: path!)
-        let expected = """
+    let image = mapDataIntCost.asString(path: path!)
+    let expected = """
 🌊🌲🌲🌲🚩🌲🌲🌲
 🌊🌲🌲🏃🏃🌲🌲🌲
 🌲🏃🏃🏃🗻🌲🌲🌲
@@ -73,19 +84,23 @@ final class AStarTests: XCTestCase {
 🌊🏃🏃🏃🌲🌲🗻🌲
 
 """
-        XCTAssertEqual(image, expected)
-    }
+    #expect(image == expected)
+  }
 
+  @Test
+  func diagonals() throws {
+    let start = Coord2D(x: 4, y: 0)
+    let path = try AStar.find(
+      mapOracle: mapDataIntCost,
+      considerDiagonalPaths: true,
+      heuristicCostCalulator: calcHeuristicCostInt,
+      start: start,
+      end: end
+    )
+    #expect(path != nil)
 
-    func testDiagonals() {
-        let start = Coord2D(x: 4, y: 0)
-        let path = AStar.find(mapOracle: mapData, considerDiagonalPaths: true,
-                              heuristicCostCalulator: calcHeuristicCost,
-                              start: start, end: end)
-        XCTAssertNotNil(path)
-
-        let image = mapData.asString(path: path!)
-        let expected = """
+    let image = mapDataIntCost.asString(path: path!)
+    let expected = """
 🌊🌲🌲🌲🚩🌲🌲🌲
 🌊🌲🌲🌲🌲🏃🌲🌲
 🌲🌲🌲🌲🗻🌲🏃🌲
@@ -96,116 +111,130 @@ final class AStarTests: XCTestCase {
 🌊🌲🌲🌲🌲🌲🗻🌲
 
 """
-        XCTAssertEqual(image, expected)
-    }
+    #expect(image == expected)
+  }
 
-    func testNoPath() {
-        let start = Coord2D(x: 7, y: 7)
-        let path = AStar.find(mapOracle: mapData, considerDiagonalPaths: true,
-                              heuristicCostCalulator: calcHeuristicCost,
-                              start: start, end: end)
-        XCTAssertNil(path)
-    }
+  @Test
+  func noPath() throws {
+    let start = Coord2D(x: 7, y: 7)
+    let path = try AStar.find(
+      mapOracle: mapDataIntCost,
+      considerDiagonalPaths: true,
+      heuristicCostCalulator: calcHeuristicCostInt,
+      start: start,
+      end: end
+    )
+    #expect(path == nil)
+  }
 
-    func testInvalidStart() {
-        let start = Coord2D(x: -1, y: 0)
-        let path = AStar.find(mapOracle: mapData, considerDiagonalPaths: true,
-                              heuristicCostCalulator: calcHeuristicCost,
-                              start: start, end: end)
-        XCTAssertNil(path)
+  @Test
+  func invalidStart() throws {
+    let start = Coord2D(x: -1, y: 0)
+    #expect(throws: AStarError.invalidStart) {
+      try AStar.find(
+        mapOracle: mapDataIntCost,
+        considerDiagonalPaths: true,
+        heuristicCostCalulator: calcHeuristicCostInt,
+        start: start,
+        end: end
+      )
     }
+  }
 
-    func testInvalidEnd() {
-        let start = Coord2D(x: 4, y: 0)
-        let path = AStar.find(mapOracle: mapData, considerDiagonalPaths: true,
-                              heuristicCostCalulator: calcHeuristicCost,
-                              start: start, end: Coord2D(x: 4, y: 1000))
-        XCTAssertNil(path)
+  @Test
+  func invalidEnd() throws {
+    let start = Coord2D(x: 4, y: 0)
+    #expect(throws: AStarError.invalidEnd) {
+      try AStar.find(
+        mapOracle: mapDataIntCost,
+        considerDiagonalPaths: true,
+        heuristicCostCalulator: calcHeuristicCostInt,
+        start: start,
+        end: Coord2D(x: 4, y: 1000)
+      )
     }
+  }
 
-    func testSameStartEnd() {
-        let start = Coord2D(x: 4, y: 0)
-        let path = AStar.find(mapOracle: mapData, considerDiagonalPaths: true,
-                              heuristicCostCalulator: calcHeuristicCost,
-                              start: start, end: start)
-        XCTAssertNil(path)
+  @Test
+  func sameStartEnd() throws {
+    let start = Coord2D(x: 4, y: 0)
+    #expect(throws: AStarError.sameStartEnd) {
+      try AStar.find(
+        mapOracle: mapDataIntCost,
+        considerDiagonalPaths: true,
+        heuristicCostCalulator: calcHeuristicCostInt,
+        start: start,
+        end: start
+      )
     }
-
-    static var allTests = [
-        ("testNoDiagonals", testNoDiagonals),
-        ("testDiagonals", testDiagonals),
-        ("testNoPath", testNoPath),
-        ("testInvalidStart", testInvalidStart),
-        ("testInvalidEnd", testInvalidEnd),
-        ("testSameStartEnd", testSameStartEnd),
-    ]
+  }
 }
 
 struct MapData<CostType: CostNumeric> {
 
-    enum Pattern {
-        case 🌊, 🗻, 🌲
+  enum Pattern {
+    case 🌊, 🗻, 🌲
 
-        var visitable: Bool {
-            switch self {
-            case .🗻: return false
-            case .🌲, .🌊: return true
-            }
-        }
-
-        /// Cost of moving through this pattern
-        var cost: CostType {
-            switch self {
-            case .🌲: return 1
-            case .🌊: return 2
-            case .🗻: return 3
-            }
-        }
+    var visitable: Bool {
+      switch self {
+      case .🗻: return false
+      case .🌲, .🌊: return true
+      }
     }
 
-    private let data: [[Pattern]]
-    private let max: (x: Int, y: Int)
-
-    init(data: [[Pattern]]) {
-        self.data = data
-        self.max = (x: data.map { $0.count }.max()!, y: data.count)
+    /// Cost of moving through this pattern
+    var cost: CostType {
+      switch self {
+      case .🌲: return 1
+      case .🌊: return 2
+      case .🗻: return 99
+      }
     }
+  }
 
-    func asString(path: [Coord2D]) -> String {
-        let pathSet = Set(path)
-        var text = ""
-        for (y, line) in data.enumerated() {
-            for (x, type) in line.enumerated() {
-                let p = Coord2D(x: x, y: y)
-                if p == path.first {
-                    text += "🚩"
-                }
-                else if p == path.last {
-                    text += "🏁"
-                }
-                else if pathSet.contains(p) {
-                    text += "🏃"
-                }
-                else {
-                    text += String(describing: type)
-                }
-            }
-            text += "\n"
+  private let data: [[Pattern]]
+  private let max: (x: Int, y: Int)
+
+  init(data: [[Pattern]]) {
+    self.data = data
+    self.max = (x: data.map { $0.count }.max()!, y: data.count)
+  }
+
+  func asString(path: [Coord2D]) -> String {
+    let pathSet = Set(path)
+    var text = ""
+    for (y, line) in data.enumerated() {
+      for (x, type) in line.enumerated() {
+        let p = Coord2D(x: x, y: y)
+        if p == path.first {
+          text += "🚩"
         }
-        return text
+        else if p == path.last {
+          text += "🏁"
+        }
+        else if pathSet.contains(p) {
+          text += "🏃"
+        }
+        else {
+          text += String(describing: type)
+        }
+      }
+      text += "\n"
     }
+    return text
+  }
 
-    private subscript(index: Coord2D) -> Pattern { data[index.y][index.x] }
+  private subscript(index: Coord2D) -> Pattern { data[index.y][index.x] }
 }
 
 extension MapData: MapOracle {
 
-    func isVisitable(position: Coord2D) -> Bool {
-        guard position.y >= 0 && position.y < max.y else { return false }
-        let row = data[position.y]
-        guard position.x >= 0 && position.x < row.count else { return false }
-        return row[position.x].visitable
-    }
+  func isVisitable(position: Coord2D) -> Bool {
+    guard position.y >= 0 && position.y < max.y else { return false }
+    let row = data[position.y]
+    guard position.x >= 0 && position.x < row.count else { return false }
+    return row[position.x].visitable
+  }
 
-    func cost(position: Coord2D) -> CostType { self[position].cost }
+  func cost(position: Coord2D) -> CostType { self[position].cost }
 }
