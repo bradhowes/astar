@@ -1,7 +1,7 @@
-[![Swift](https://github.com/bradhowes/AStar/workflows/CI/badge.svg)]()
-[![Swift Badge]][Swift]
-[![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
-[![License Badge]][License]
+[![](https://github.com/bradhowes/astar/workflows/CI/badge.svg)]()
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/bradhowes/astar)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/bradhowes/astar)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # AStar - an A* Library in Swift
 
