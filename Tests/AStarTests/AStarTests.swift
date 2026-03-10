@@ -20,6 +20,17 @@ struct AStarTests {
     [.🌊, .🌊, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
   ])
 
+  let mapDataIntCostAlt = MapData<Int>(data: [
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
+    [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
+    [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
+    [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
+    [.🌊, .🌊, .🌊, .🌲, .🌲, .🌲, .🗻, .🌲] // extra cost to force alt route
+  ])
+
   func calcHeuristicCostFloat(position: Coord2D) -> Float { Float(abs(position.x - end.x) + abs(position.y - end.y)) }
 
   let mapDataFloatCost = MapData<Float>(data: [
@@ -30,7 +41,7 @@ struct AStarTests {
     [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
     [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
     [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
-    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
+    [.🌊, .🌊, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
   ])
 
   @Test
@@ -55,6 +66,33 @@ struct AStarTests {
 🌲🏃🗻🏃🗻🌲🌲🌊
 🌊🏃🗻🏃🌲🌲🗻🗻
 🌊🏃🏃🏃🌲🌲🗻🌲
+
+"""
+    #expect(image == expected)
+  }
+
+  @Test
+  func noDiagonalsAlt() throws {
+    let start = Coord2D(x: 4, y: 0)
+    let path = try AStar<MapData<Int>>.find(
+      mapOracle: mapDataIntCostAlt,
+      considerDiagonalPaths: false,
+      heuristicCostCalulator: calcHeuristicCostInt,
+      start: start,
+      end: end
+    )
+    #expect(path != nil)
+
+    let image = mapDataIntCostAlt.asString(path: path!)
+    let expected = """
+🌊🌲🌲🌲🚩🌲🌲🌲
+🌊🌲🌲🌲🏃🏃🌲🌲
+🌲🌲🌲🌲🗻🏃🏃🏃
+🌲🌲🗻🗻🗻🗻🗻🏃
+🌲🌲🗻🏃🏁🗻🏃🏃
+🌲🌲🗻🏃🗻🏃🏃🌊
+🌊🌲🗻🏃🏃🏃🗻🗻
+🌊🌊🌊🌲🌲🌲🗻🌲
 
 """
     #expect(image == expected)

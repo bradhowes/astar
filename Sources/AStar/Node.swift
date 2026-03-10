@@ -2,7 +2,8 @@
 
 /**
  Helper class that keeps track of the costs involved in reaching a given position in the map. Maintains a linked list
- of nodes that make up a path to the starting position.
+ of nodes that make up a path to the starting position. Should be able to get away with a `struct` with some retooling of
+ the linked list tracking.
  */
 internal final class Node<CostType: CostNumeric> {
 
@@ -79,12 +80,21 @@ internal final class Node<CostType: CostNumeric> {
    - returns: array of Coord2D values
    */
   func path() -> [Coord2D] {
-    guard let parent = self.parent else { return [position] }
-    return parent.path() + [position]
+    var coords: [Coord2D] = []
+    addCoords(&coords)
+    return coords
   }
 }
 
 extension Node {
+
+  private func addCoords(_ coords: inout [Coord2D]) {
+    if let parent {
+      parent.addCoords(&coords)
+    }
+    coords.append(position)
+  }
+
   private func setCosts(parentKnownCost: CostType, heuristicCost: CostType) {
     knownCost = positionCost + parentKnownCost
     totalCost = knownCost + heuristicCost
