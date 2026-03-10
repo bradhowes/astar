@@ -1,7 +1,7 @@
 [![](https://github.com/bradhowes/astar/workflows/CI/badge.svg)]()
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/bradhowes/astar)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/bradhowes/astar)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT][mit]][license]
 
 # AStar - an A* Library in Swift
 
@@ -88,8 +88,5 @@ cost of the trip by 2. Thus the algorithm chose the one shown above.
 This package relies on the [PriorityQueue](https://github.com/bradhowes/PriorityQueue) package for Swift that provides a
 min/max ordering of items using a binary heap.
 
-[License Badge]: https://img.shields.io/github/license/bradhowes/AStar.svg?color=yellow "MIT License"
-[License]: https://github.com/bradhowes/AStar/blob/master/LICENSE.txt
-
-[Swift Badge]: https://img.shields.io/badge/swift-5.2-orange.svg "Swift 5.2"
-[Swift]: https://swift.org/blog/swift-5-2-released/
+[mit]: https://img.shields.io/badge/License-MIT-A31F34.svg
+[license]: https://opensource.org/licenses/MIT
