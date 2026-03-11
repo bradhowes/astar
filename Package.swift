@@ -16,7 +16,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/bradhowes/PriorityQueue", from: "1.2.0"),
     .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
-    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.63.2")
+    // .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.63.2")
   ],
   targets: [
     .target(
@@ -24,9 +24,9 @@ let package = Package(
       dependencies: [
         .product(name: "PriorityQueue", package: "PriorityQueue")
       ],
-      plugins: [
-        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
-      ]
+      // plugins: [
+      //   .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+      // ]
     ),
     .testTarget(
       name: "AStarTests",
