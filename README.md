@@ -14,11 +14,11 @@ The AStar API is very basic. There is just the static `find` method. Here is an 
 
 ```swift
 let mapData = MapData(data: [
-    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
-    [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🏁, .🗻, .🌊, .🌊],
     [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
     [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
@@ -40,8 +40,8 @@ You supply something that implements the `MapOracle` protocol like the `MapData`
 acceptable, and provide a way to estimate the cost of moving from a given point on the map to the end point (the
 _heuristic cost_). The start and end points complete the `find` request.
 
-You get back an optional array of `Coord2D` values. If `nil` then there was no path to be found. Otherwise, the array
-will have the map coordinates of the path that was found, starting at `start` and ending with `end`.
+You get back an optional array of `Position` values. If `nil` then there was no path to be found. Otherwise, the array
+will have the map coordinates and the costs of the path that was found, starting at `start` and ending with `end`.
 
 Here is the visual representation of the map with the found path. The starting position appears as a red flag (🚩) and
 the end position is a checkered flag (🏁). The path in between these two points contains an adventurer (🏃).
