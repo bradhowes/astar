@@ -3,11 +3,11 @@
 import PriorityQueue
 
 /**
- Contains the functionality for performing A* path searches. There is only one public static method: `find` that sets up the
+ Contains the functionality for performing A\* path searches. There is only one public static method: `find` that sets up the
  environment and then performs the search.
 
- The `OracleType` generic parameter provides the `CostType` type that determines how costs are stored (Int, Float, etc.) as well
- as a means to determine if a map location is visitable.
+ The `OracleType` generic parameter provides the `CostType` type that determines how costs are stored (Int, Float, etc.) and
+ has a means to determine if a map location is visitable and how costly it is to do so.
  */
 public struct AStar<OracleType> where OracleType: MapOracle {
 
@@ -15,7 +15,7 @@ public struct AStar<OracleType> where OracleType: MapOracle {
 
   /**
    Function type that returns the heuristic cost for moving from a given position to an end goal (the method must have knowledge of
-   the end goal)
+   the end goal).
    */
   public typealias HeuristicCostCalculator = (Coord2D) -> OracleType.CostType
 
@@ -24,7 +24,8 @@ public struct AStar<OracleType> where OracleType: MapOracle {
 
    - parameter mapOracle: the map to to use for determining valid paths
    - parameter considerDiagonalPaths: if true, allow traveling diagonally from one position to another
-   - parameter heuristicCostCalulator: function that returns the heuristic cost between a given position and the end goal
+   - parameter heuristicCostCalulator: function that returns the heuristic cost between a given position and the end goal. This is
+   separate from the `mapOracle` for convenience, but it could 
    - parameter start: the starting position in the map. If not valid, throws ``Failure.invalidStart``
    - parameter end: the end (goal) position in the map. If not valie, throws ``Failure.invalidEnd``. If same as ``start`` then
    throws ``Failure.sameStartEnd``.
@@ -55,7 +56,7 @@ public struct AStar<OracleType> where OracleType: MapOracle {
         return node.path()
       }
 
-      // This node has the best cost so lock it from futher changes.
+      // This node has the best cost of all in the queue so lock it from futher changes.
       node.lockDown()
 
       offsets.forEach { offset in
