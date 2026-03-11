@@ -10,11 +10,8 @@ internal final class Node<CostType: CostNumeric> {
   /// Lcation of this node in a map
   let position: Coord2D
 
-  /// The total cost of this node: the known cost from the start + the estimated cost to the end
-  private(set) var totalCost: CostType = .zero
-
   /// How must did it cost to enter this location
-  private let positionCost: CostType
+  let positionCost: CostType
 
   /// The link to the previous node in the path of nodes
   private var parent: Node?
@@ -22,12 +19,17 @@ internal final class Node<CostType: CostNumeric> {
   /// If true, allow reparenting. This is allowed up until a node `lockDown` is invoked.
   private var canReparent: Bool = true
 
-  /// This is the known cost of the path to reach this node. Anything beyond is a heuristic cost, up until this is
-  /// locked down.
+  /**
+   This is the known cost of the path to reach this node. Anything beyond is a heuristic cost, up until this is
+   locked down.
+   */
   private var knownCost: CostType = .zero
 
+  /// The total cost of this node: the known cost from the start + the estimated cost to the end
+  private var totalCost: CostType = .zero
+
   /**
-   Create a new root node (one without a parent)
+   Create a new root node (one without a parent) and no cost.
 
    - parameter position: the location of the node in the map
    */
@@ -41,14 +43,14 @@ internal final class Node<CostType: CostNumeric> {
 
    - parameter position: the location of the node in the map
    - parameter cost: the cost of travelling into this node
-   - parameter heuristicRemaining: the estimated cost travelling to the goal position
+   - parameter heuristicRemaining: the estimated cost travelling to the goal position from this position
    - parameter parent: the parent node representing the path to this node
    */
   init(position: Coord2D, cost: CostType, heuristicRemaining: CostType, parent: Node) {
     self.position = position
     self.positionCost = cost
     self.parent = parent
-    setCosts(parentKnownCost: parent.knownCost, heuristicCost: heuristicRemaining)
+    updateCosts(parentKnownCost: parent.knownCost, heuristicCost: heuristicRemaining)
   }
 
   /**
@@ -63,7 +65,7 @@ internal final class Node<CostType: CostNumeric> {
     guard canReparent else { return nil }
     if (heuristicRemaining + positionCost + newParent.knownCost) < totalCost {
       self.parent = newParent
-      setCosts(parentKnownCost: newParent.knownCost, heuristicCost: heuristicRemaining)
+      updateCosts(parentKnownCost: newParent.knownCost, heuristicCost: heuristicRemaining)
       return self
     }
     return nil
@@ -77,25 +79,25 @@ internal final class Node<CostType: CostNumeric> {
   /**
    Obtain the path from the first Node in the chain to this one.
 
-   - returns: array of Coord2D values
+   - returns: collection of ``Position<CostType>`` values, ordered from start to end.
    */
-  func path() -> [Coord2D] {
-    var coords: [Coord2D] = []
-    addCoords(&coords)
-    return coords
+  func path() -> [Position<CostType>] {
+    var paths: [Position<CostType>] = []
+    addPath(&paths)
+    return paths
   }
 }
 
 extension Node {
 
-  private func addCoords(_ coords: inout [Coord2D]) {
+  private func addPath(_ paths: inout [Position<CostType>]) {
     if let parent {
-      parent.addCoords(&coords)
+      parent.addPath(&paths)
     }
-    coords.append(position)
+    paths.append(.init(position: position, positionCost: positionCost, runningCost: knownCost))
   }
 
-  private func setCosts(parentKnownCost: CostType, heuristicCost: CostType) {
+  private func updateCosts(parentKnownCost: CostType, heuristicCost: CostType) {
     knownCost = positionCost + parentKnownCost
     totalCost = knownCost + heuristicCost
   }

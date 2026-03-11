@@ -3,29 +3,30 @@ import Testing
 @testable import AStar
 
 @Suite
-struct AStarTests {
+fileprivate struct AStarTests {
 
+  let start = Coord2D(x: 4, y: 0)
   let end = Coord2D(x: 4, y: 4)
 
   func calcHeuristicCostInt(position: Coord2D) -> Int { abs(position.x - end.x) + abs(position.y - end.y) }
 
   let mapDataIntCost = MapData<Int>(data: [
-    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
-    [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🏁, .🗻, .🌊, .🌊],
     [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
     [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
     [.🌊, .🌊, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
   ])
 
   let mapDataIntCostAlt = MapData<Int>(data: [
-    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
-    [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🏁, .🗻, .🌊, .🌊],
     [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
     [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
     [.🌊, .🌊, .🌊, .🌲, .🌲, .🌲, .🗻, .🌲] // extra cost to force alt route
@@ -34,11 +35,11 @@ struct AStarTests {
   func calcHeuristicCostFloat(position: Coord2D) -> Float { Float(abs(position.x - end.x) + abs(position.y - end.y)) }
 
   let mapDataFloatCost = MapData<Float>(data: [
-    [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
+    [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🗻, .🗻, .🗻, .🗻, .🗻, .🌲],
-    [.🌲, .🌲, .🗻, .🌲, .🌲, .🗻, .🌊, .🌊],
+    [.🌲, .🌲, .🗻, .🌲, .🏁, .🗻, .🌊, .🌊],
     [.🌲, .🌲, .🗻, .🌲, .🗻, .🌲, .🌲, .🌊],
     [.🌊, .🌲, .🗻, .🌲, .🌲, .🌲, .🗻, .🗻],
     [.🌊, .🌊, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
@@ -46,7 +47,6 @@ struct AStarTests {
 
   @Test
   func noDiagonals() throws {
-    let start = Coord2D(x: 4, y: 0)
     let path = try AStar<MapData<Int>>.find(
       mapOracle: mapDataIntCost,
       considerDiagonalPaths: false,
@@ -55,6 +55,13 @@ struct AStarTests {
       end: end
     )
     #expect(path != nil)
+    #expect(path?.count == 17)
+    #expect(path?.first?.runningCost == 0)
+    #expect(path?.last?.runningCost == 16)
+    #expect(path?.map(\.positionCost).filter{ $0 == 0 }.count == 2)
+    #expect(path?.map(\.positionCost).filter{ $0 == 1 }.count == 14)
+    #expect(path?.map(\.positionCost).filter{ $0 == 2 }.count == 1)
+    #expect(path?.map(\.positionCost).filter{ $0 == 99 }.count == 0)
 
     let image = mapDataIntCost.asString(path: path!)
     let expected = """
@@ -66,14 +73,12 @@ struct AStarTests {
 🌲🏃🗻🏃🗻🌲🌲🌊
 🌊🏃🗻🏃🌲🌲🗻🗻
 🌊🏃🏃🏃🌲🌲🗻🌲
-
 """
     #expect(image == expected)
   }
 
   @Test
   func noDiagonalsAlt() throws {
-    let start = Coord2D(x: 4, y: 0)
     let path = try AStar<MapData<Int>>.find(
       mapOracle: mapDataIntCostAlt,
       considerDiagonalPaths: false,
@@ -82,6 +87,13 @@ struct AStarTests {
       end: end
     )
     #expect(path != nil)
+    #expect(path?.count == 17)
+    #expect(path?.first?.runningCost == 0)
+    #expect(path?.last?.runningCost == 17)
+    #expect(path?.map(\.positionCost).filter{ $0 == 0 }.count == 2)
+    #expect(path?.map(\.positionCost).filter{ $0 == 1 }.count == 13)
+    #expect(path?.map(\.positionCost).filter{ $0 == 2 }.count == 2)
+    #expect(path?.map(\.positionCost).filter{ $0 == 99 }.count == 0)
 
     let image = mapDataIntCostAlt.asString(path: path!)
     let expected = """
@@ -93,14 +105,12 @@ struct AStarTests {
 🌲🌲🗻🏃🗻🏃🏃🌊
 🌊🌲🗻🏃🏃🏃🗻🗻
 🌊🌊🌊🌲🌲🌲🗻🌲
-
 """
     #expect(image == expected)
   }
 
   @Test
   func noDiagonalsFloat() throws {
-    let start = Coord2D(x: 4, y: 0)
     let path = try AStar<MapData<Float>>.find(
       mapOracle: mapDataFloatCost,
       considerDiagonalPaths: false,
@@ -109,8 +119,15 @@ struct AStarTests {
       end: end
     )
     #expect(path != nil)
+    #expect(path?.count == 17)
+    #expect(path?.first?.runningCost == 0)
+    #expect(path?.last?.runningCost == 16.0)
+    #expect(path?.map(\.positionCost).filter{ $0 == 0 }.count == 2)
+    #expect(path?.map(\.positionCost).filter{ $0 == 1 }.count == 14)
+    #expect(path?.map(\.positionCost).filter{ $0 == 2 }.count == 1)
+    #expect(path?.map(\.positionCost).filter{ $0 == 99 }.count == 0)
 
-    let image = mapDataIntCost.asString(path: path!)
+    let image = mapDataFloatCost.asString(path: path!)
     let expected = """
 🌊🌲🌲🌲🚩🌲🌲🌲
 🌊🌲🌲🏃🏃🌲🌲🌲
@@ -120,14 +137,12 @@ struct AStarTests {
 🌲🏃🗻🏃🗻🌲🌲🌊
 🌊🏃🗻🏃🌲🌲🗻🗻
 🌊🏃🏃🏃🌲🌲🗻🌲
-
 """
     #expect(image == expected)
   }
 
   @Test
   func diagonals() throws {
-    let start = Coord2D(x: 4, y: 0)
     let path = try AStar.find(
       mapOracle: mapDataIntCost,
       considerDiagonalPaths: true,
@@ -136,6 +151,13 @@ struct AStarTests {
       end: end
     )
     #expect(path != nil)
+    #expect(path?.count == 7)
+    #expect(path?.first?.runningCost == 0)
+    #expect(path?.last?.runningCost == 6)
+    #expect(path?.map(\.positionCost).filter{ $0 == 0 }.count == 2)
+    #expect(path?.map(\.positionCost).filter{ $0 == 1 }.count == 4)
+    #expect(path?.map(\.positionCost).filter{ $0 == 2 }.count == 1)
+    #expect(path?.map(\.positionCost).filter{ $0 == 99 }.count == 0)
 
     let image = mapDataIntCost.asString(path: path!)
     let expected = """
@@ -147,7 +169,6 @@ struct AStarTests {
 🌲🌲🗻🌲🗻🏃🌲🌊
 🌊🌲🗻🌲🌲🌲🗻🗻
 🌊🌊🌲🌲🌲🌲🗻🌲
-
 """
     #expect(image == expected)
   }
@@ -208,21 +229,22 @@ struct AStarTests {
   }
 }
 
-struct MapData<CostType: CostNumeric> {
+fileprivate struct MapData<CostType: CostNumeric> {
 
   enum Pattern {
-    case 🌊, 🗻, 🌲
+    case 🚩, 🌊, 🗻, 🌲, 🏁
 
     var visitable: Bool {
       switch self {
       case .🗻: return false
-      case .🌲, .🌊: return true
+      default: return true
       }
     }
 
     /// Cost of moving through this pattern
     var cost: CostType {
       switch self {
+      case .🚩, .🏁: return 0
       case .🌲: return 1
       case .🌊: return 2
       case .🗻: return 99
@@ -238,16 +260,18 @@ struct MapData<CostType: CostNumeric> {
     self.max = (x: data.map { $0.count }.max()!, y: data.count)
   }
 
-  func asString(path: [Coord2D]) -> String {
-    let pathSet = Set(path)
+  func asString(path: [Position<CostType>]) -> String {
+    let pathSet = Set(path.map(\.position))
+    let start = path.first?.position
+    let finish = path.last?.position
     var text = ""
     for (y, line) in data.enumerated() {
       for (x, type) in line.enumerated() {
         let p = Coord2D(x: x, y: y)
-        if p == path.first {
+        if p == start {
           text += "🚩"
         }
-        else if p == path.last {
+        else if p == finish {
           text += "🏁"
         }
         else if pathSet.contains(p) {
@@ -259,7 +283,7 @@ struct MapData<CostType: CostNumeric> {
       }
       text += "\n"
     }
-    return text
+    return String(text.dropLast())
   }
 
   private subscript(index: Coord2D) -> Pattern { data[index.y][index.x] }

@@ -36,7 +36,7 @@ public struct AStar<OracleType> where OracleType: MapOracle {
     heuristicCostCalulator: @escaping HeuristicCostCalculator,
     start: Coord2D,
     end: Coord2D
-  ) throws -> [Coord2D]? {
+  ) throws -> [Position<OracleType.CostType>]? {
     guard start != end else { throw AStarError.sameStartEnd }
     guard mapOracle.isVisitable(position: start) else { throw AStarError.invalidStart }
     guard mapOracle.isVisitable(position: end) else { throw AStarError.invalidEnd }
@@ -55,7 +55,7 @@ public struct AStar<OracleType> where OracleType: MapOracle {
         return node.path()
       }
 
-      // Fix this node and check adjacent ones
+      // This node has the best cost so lock it from futher changes.
       node.lockDown()
 
       offsets.forEach { offset in
