@@ -4,7 +4,7 @@
  A part of complete path that documents the location, how much it cost to enter, and the current
  running cost for the path up to this point.
  */
-public struct Position<CostType: CostNumeric> {
+public struct Position<CostType: NumericCost> {
   /// Lcation of this part of the path on a map
   public let position: Coord2D
   /// How must did it cost to enter this location

@@ -17,7 +17,7 @@ public struct AStar<OracleType> where OracleType: MapOracle {
    Function type that returns the heuristic cost for moving from a given position to an end goal (the method must have knowledge of
    the end goal).
    */
-  public typealias HeuristicCostCalculator = (Coord2D) -> OracleType.CostType
+  public typealias HeuristicCostCalculator = (Coord2D, Coord2D) -> OracleType.CostType
 
   /**
    Attempt to find the lowest-cost path from start to end positions of a given map.
@@ -39,8 +39,8 @@ public struct AStar<OracleType> where OracleType: MapOracle {
     end: Coord2D
   ) throws -> [Position<OracleType.CostType>]? {
     guard start != end else { throw AStarError.sameStartEnd }
-    guard mapOracle.isVisitable(position: start) else { throw AStarError.invalidStart }
-    guard mapOracle.isVisitable(position: end) else { throw AStarError.invalidEnd }
+    guard mapOracle.canVisit(position: start) else { throw AStarError.invalidStart }
+    guard mapOracle.canVisit(position: end) else { throw AStarError.invalidEnd }
 
     let offsets = (
       [Coord2D(x: -1, y: 0), Coord2D(x: 0, y: -1), Coord2D(x: 0, y: 1), Coord2D(x: 1, y: 0)] +
@@ -61,8 +61,8 @@ public struct AStar<OracleType> where OracleType: MapOracle {
 
       offsets.forEach { offset in
         let position = node.position + offset
-        if mapOracle.isVisitable(position: position) {
-          let remaining = heuristicCostCalulator(position)
+        if mapOracle.canVisit(position: position) {
+          let remaining = heuristicCostCalulator(position, end)
            if let cachedNode = visitedCache[position] {
 
             // Already visited node -- see if entering it would be cheaper now than it was before.
@@ -88,6 +88,21 @@ public struct AStar<OracleType> where OracleType: MapOracle {
     }
 
     return nil
+  }
+
+  public static func find(
+    mapOracle: OracleType,
+    considerDiagonalPaths: Bool,
+    start: Coord2D,
+    end: Coord2D
+  ) throws -> [Position<OracleType.CostType>]? {
+    try find(
+      mapOracle: mapOracle,
+      considerDiagonalPaths: considerDiagonalPaths,
+      heuristicCostCalulator: { mapOracle.distance(from: $0, to: $1) },
+      start: start,
+      end: end
+    )
   }
 }
 

@@ -5,7 +5,7 @@
  of nodes that make up a path to the starting position. Should be able to get away with a `struct` with some retooling of
  the linked list tracking.
  */
-internal final class Node<CostType: CostNumeric> {
+internal final class Node<CostType: NumericCost> {
 
   /// Lcation of this node in a map
   let position: Coord2D

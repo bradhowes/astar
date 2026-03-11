@@ -8,9 +8,7 @@ fileprivate struct AStarTests {
   let start = Coord2D(x: 4, y: 0)
   let end = Coord2D(x: 4, y: 4)
 
-  func calcHeuristicCostInt(position: Coord2D) -> Int { abs(position.x - end.x) + abs(position.y - end.y) }
-
-  let mapDataIntCost = MapData<Int>(data: [
+  var mapDataIntCost = MapData<Int>(data: [
     [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
@@ -21,7 +19,7 @@ fileprivate struct AStarTests {
     [.🌊, .🌊, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
   ])
 
-  let mapDataIntCostAlt = MapData<Int>(data: [
+  var mapDataIntCostAlt = MapData<Int>(data: [
     [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
@@ -32,9 +30,7 @@ fileprivate struct AStarTests {
     [.🌊, .🌊, .🌊, .🌲, .🌲, .🌲, .🗻, .🌲] // extra cost to force alt route
   ])
 
-  func calcHeuristicCostFloat(position: Coord2D) -> Float { Float(abs(position.x - end.x) + abs(position.y - end.y)) }
-
-  let mapDataFloatCost = MapData<Float>(data: [
+  var mapDataFloatCost = MapData<Float>(data: [
     [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
@@ -50,7 +46,6 @@ fileprivate struct AStarTests {
     let path = try AStar<MapData<Int>>.find(
       mapOracle: mapDataIntCost,
       considerDiagonalPaths: false,
-      heuristicCostCalulator: calcHeuristicCostInt,
       start: start,
       end: end
     )
@@ -82,7 +77,6 @@ fileprivate struct AStarTests {
     let path = try AStar<MapData<Int>>.find(
       mapOracle: mapDataIntCostAlt,
       considerDiagonalPaths: false,
-      heuristicCostCalulator: calcHeuristicCostInt,
       start: start,
       end: end
     )
@@ -114,7 +108,6 @@ fileprivate struct AStarTests {
     let path = try AStar<MapData<Float>>.find(
       mapOracle: mapDataFloatCost,
       considerDiagonalPaths: false,
-      heuristicCostCalulator: calcHeuristicCostFloat,
       start: start,
       end: end
     )
@@ -146,7 +139,6 @@ fileprivate struct AStarTests {
     let path = try AStar.find(
       mapOracle: mapDataIntCost,
       considerDiagonalPaths: true,
-      heuristicCostCalulator: calcHeuristicCostInt,
       start: start,
       end: end
     )
@@ -174,12 +166,46 @@ fileprivate struct AStarTests {
   }
 
   @Test
+  mutating func sameCostAllVisitable() async throws {
+    mapDataFloatCost.customVisitable = { _ in true }
+    mapDataFloatCost.customCost = { _ in 1 }
+    mapDataFloatCost.customDistance = { $0.distance(to: $1) }
+    let path = try AStar.find(
+      mapOracle: mapDataFloatCost,
+      considerDiagonalPaths: false,
+      start: start,
+      end: end
+    )
+
+    #expect(path != nil)
+    #expect(path?.count == 5)
+    #expect(path?.first?.runningCost == 0)
+    #expect(path?.last?.runningCost == 4)
+    #expect(path?.map(\.positionCost).filter{ $0 == 0 }.count == 1)
+    #expect(path?.map(\.positionCost).filter{ $0 == 1 }.count == 4)
+    #expect(path?.map(\.positionCost).filter{ $0 == 2 }.count == 0)
+    #expect(path?.map(\.positionCost).filter{ $0 == 99 }.count == 0)
+
+    let image = mapDataFloatCost.asString(path: path!)
+    let expected = """
+🌊🌲🌲🌲🚩🌲🌲🌲
+🌊🌲🌲🌲🏃🌲🌲🌲
+🌲🌲🌲🌲🏃🌲🌲🌲
+🌲🌲🗻🗻🏃🗻🗻🌲
+🌲🌲🗻🌲🏁🗻🌊🌊
+🌲🌲🗻🌲🗻🌲🌲🌊
+🌊🌲🗻🌲🌲🌲🗻🗻
+🌊🌊🌲🌲🌲🌲🗻🌲
+"""
+    #expect(image == expected)
+  }
+
+  @Test
   func noPath() throws {
     let start = Coord2D(x: 7, y: 7)
     let path = try AStar.find(
       mapOracle: mapDataIntCost,
       considerDiagonalPaths: true,
-      heuristicCostCalulator: calcHeuristicCostInt,
       start: start,
       end: end
     )
@@ -193,7 +219,6 @@ fileprivate struct AStarTests {
       try AStar.find(
         mapOracle: mapDataIntCost,
         considerDiagonalPaths: true,
-        heuristicCostCalulator: calcHeuristicCostInt,
         start: start,
         end: end
       )
@@ -202,12 +227,10 @@ fileprivate struct AStarTests {
 
   @Test
   func invalidEnd() throws {
-    let start = Coord2D(x: 4, y: 0)
     #expect(throws: AStarError.invalidEnd) {
       try AStar.find(
         mapOracle: mapDataIntCost,
         considerDiagonalPaths: true,
-        heuristicCostCalulator: calcHeuristicCostInt,
         start: start,
         end: Coord2D(x: 4, y: 1000)
       )
@@ -216,12 +239,10 @@ fileprivate struct AStarTests {
 
   @Test
   func sameStartEnd() throws {
-    let start = Coord2D(x: 4, y: 0)
     #expect(throws: AStarError.sameStartEnd) {
       try AStar.find(
         mapOracle: mapDataIntCost,
         considerDiagonalPaths: true,
-        heuristicCostCalulator: calcHeuristicCostInt,
         start: start,
         end: start
       )
@@ -229,7 +250,7 @@ fileprivate struct AStarTests {
   }
 }
 
-fileprivate struct MapData<CostType: CostNumeric> {
+fileprivate struct MapData<CostType: NumericCost>: MapOracle {
 
   enum Pattern {
     case 🚩, 🌊, 🗻, 🌲, 🏁
@@ -244,20 +265,29 @@ fileprivate struct MapData<CostType: CostNumeric> {
     /// Cost of moving through this pattern
     var cost: CostType {
       switch self {
-      case .🚩, .🏁: return 0
       case .🌲: return 1
       case .🌊: return 2
-      case .🗻: return 99
+      default: return 0
       }
     }
   }
 
-  private let data: [[Pattern]]
-  private let max: (x: Int, y: Int)
+  private let map: [[Pattern]]
+  private let bounds: (x: Range<Int>, y: Range<Int>)
+
+  var customDistance: ((Coord2D, Coord2D) -> CostType)
+  var customCost: (Pattern) -> CostType
+  var customVisitable: (Pattern) -> Bool
 
   init(data: [[Pattern]]) {
-    self.data = data
-    self.max = (x: data.map { $0.count }.max()!, y: data.count)
+    self.map = data
+    self.bounds = (
+      x: 0..<data.map(\.count).max()!,
+      y: 0..<data.count
+    )
+    self.customDistance = { CostType.distance(from: $0, to: $1) }
+    self.customCost = { $0.cost }
+    self.customVisitable = { $0.visitable }
   }
 
   func asString(path: [Position<CostType>]) -> String {
@@ -265,20 +295,13 @@ fileprivate struct MapData<CostType: CostNumeric> {
     let start = path.first?.position
     let finish = path.last?.position
     var text = ""
-    for (y, line) in data.enumerated() {
+    for (y, line) in map.enumerated() {
       for (x, type) in line.enumerated() {
-        let p = Coord2D(x: x, y: y)
-        if p == start {
-          text += "🚩"
-        }
-        else if p == finish {
-          text += "🏁"
-        }
-        else if pathSet.contains(p) {
-          text += "🏃"
-        }
-        else {
-          text += String(describing: type)
+        let pos = Coord2D(x: x, y: y)
+        switch pos {
+        case start: text += "🚩"
+        case finish: text += "🏁"
+        default: text += pathSet.contains(pos) ? "🏃" : String(describing: type)
         }
       }
       text += "\n"
@@ -286,17 +309,30 @@ fileprivate struct MapData<CostType: CostNumeric> {
     return String(text.dropLast())
   }
 
-  private subscript(index: Coord2D) -> Pattern { data[index.y][index.x] }
+  private subscript(index: Coord2D) -> Pattern {
+    map[index.y][index.x]
+  }
 }
 
-extension MapData: MapOracle {
+extension MapData {
 
-  func isVisitable(position: Coord2D) -> Bool {
-    guard position.y >= 0 && position.y < max.y else { return false }
-    let row = data[position.y]
-    guard position.x >= 0 && position.x < row.count else { return false }
-    return row[position.x].visitable
+  @inlinable
+  func inBounds(position: Coord2D) -> Bool {
+    bounds.x.contains(position.x) && bounds.y.contains(position.y)
   }
 
-  func cost(position: Coord2D) -> CostType { self[position].cost }
+  @inlinable
+  func canVisit(position: Coord2D) -> Bool {
+    inBounds(position: position) && customVisitable(self[position])
+  }
+
+  @inlinable
+  func cost(position: Coord2D) -> CostType {
+    customCost(self[position])
+  }
+
+  @inlinable
+  func distance(from: Coord2D, to: Coord2D) -> CostType {
+    customDistance(from, to)
+  }
 }

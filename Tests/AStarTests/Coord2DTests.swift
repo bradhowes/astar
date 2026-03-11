@@ -22,6 +22,7 @@ struct Coord2DTests {
     let p1 = Coord2D(x: 10, y: 20)
     let p2 = Coord2D(x: 10, y: 20)
     #expect(p1 == p2)
+    #expect(Coord2D.zero == .init(x: 0, y: 0))
   }
 
   /**
