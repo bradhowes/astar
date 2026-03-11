@@ -24,8 +24,8 @@ let mapData = MapData(data: [
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🗻, .🌲]
 ])
 
-let start = Coord2D(x: 4, y: 0)
-let end = Coord2D(x: 4, y: 4)
+let start = Coord2D(x: 4, y: 0) // location of 🚩 above
+let end = Coord2D(x: 4, y: 4)   // location of 🏁 above
 func distanceToEnd(position: Coord2D) -> Int { abs(position.x - end.x) + abs(position.y - end.y) }
 let path = AStar.find(
   mapOracle: mapOracle, 
