@@ -1,7 +1,18 @@
 // Copyright © 2020-2026 Brad Howes. All rights reserved.
 
 /**
- Interface for what AStar needs from a map.
+ Interface for what AStar needs from a graph/map to calculate the shortest path between two locations accounting for costs
+ associated with traversals between graph nodes.
+
+ There are two abstract types associated with the GraphOracle:
+
+ - `Location` -- unique identifier for a node in the graph/map.
+ - `Cost` -- a numerical expression of the cost associated with a graph.
+
+ There are two costs being managed in A\* processing: a cost for entering a node in the graph, and a heuristic / estimated cost
+ that indicates how close the current node is from the goal node. On 2D cartesian grid, this is usually a measure of distance
+ between two points, so the closer the two points are the lower the estimated cost. Note that estimated costs only factor into the
+ search aspect of the A\* path building; they do not appear in the final path results.
  */
 public protocol GraphOracle {
   associatedtype Location: Hashable
@@ -18,8 +29,11 @@ public protocol GraphOracle {
   /**
    Obtain a collection of positions next to the given one to be considered for adding to the optimal path. Note that only points
    that pass `canVisit` should be included.
+
+   - parameter location: the location to work with.
+   - returns: collection of `Location` values that are connected to the given location.
    */
-  func adjacentLocations(to location: Location, diagonals: Bool) -> [Location]
+  func adjacentLocations(to location: Location) -> [Location]
 
   /**
    Determine the cost of the given position when added to the path. This is the real cost of the location, not an estimated one.
@@ -27,7 +41,7 @@ public protocol GraphOracle {
    - parameter location: the location to check
    - returns: cost to enter the position
    */
-  func cost(location: Location) -> Cost
+  func cost(entering location: Location) -> Cost
 
   /**
    Determine an estimated cost for moving from one location to another. It should remain the same when called with the same
@@ -41,13 +55,5 @@ extension GraphOracle where Location == Coord2D {
 
   public func estimatedCost(from: Location, to: Location) -> Cost {
     Cost.distance(from: from, to: to)
-  }
-
-  public func adjacentPositions(to location: Location, diagonals: Bool) -> [Location] {
-    let offsets: [Offset2D] = (
-      [.init(dx: -1, dy: 0), .init(dx: 0, dy: -1), .init(dx: 0, dy: 1), .init(dx: 1, dy: 0)] +
-      (diagonals ? [.init(dx: -1, dy: -1), .init(dx: -1, dy: 1), .init(dx: 1, dy: -1), .init(dx: 1, dy: 1)] : [])
-    )
-    return offsets.map { location + $0 }.filter { canVisit(location: $0) }
   }
 }

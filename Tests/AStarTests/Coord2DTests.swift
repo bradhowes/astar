@@ -9,19 +9,19 @@ struct Coord2DTests {
   @Test
   func addition() {
 
-    let a = Coord2D(x: 1, y: 2)
-    let b = Offset2D(dx: 3, dy: 5)
-    let c = a + b
+    let x = Coord2D(x: 1, y: 2)
+    let y = Offset2D(dx: 3, dy: 5)
+    let z = x + y
 
-    #expect(c.x == a.x + b.dx)
-    #expect(c.y == a.y + b.dy)
+    #expect(z.x == x.x + y.dx)
+    #expect(z.y == x.y + y.dy)
   }
 
   @Test
   func equality() {
-    let p1 = Coord2D(x: 10, y: 20)
-    let p2 = Coord2D(x: 10, y: 20)
-    #expect(p1 == p2)
+    let x = Coord2D(x: 10, y: 20)
+    let y = Coord2D(x: 10, y: 20)
+    #expect(x == y)
     #expect(Coord2D.zero == .init(x: 0, y: 0))
   }
 
@@ -33,14 +33,13 @@ struct Coord2DTests {
     var mp = [Coord2D: Coord2D]()
     let iterCount = 100_000
     for _ in 0..<iterCount {
-      let x = Int(arc4random_uniform(100_000)) - 50_000
-      let y = Int(arc4random_uniform(100_000)) - 50_000
-      let p = Coord2D(x: Int(x), y: y)
-      if let z = mp[p] {
-        #expect(z == p)
-      }
-      else {
-        mp[p] = p
+      let x = Int.random(in: 0...100_000) - 50_000
+      let y = Int.random(in: 0...100_000) - 50_000
+      let z = Coord2D(x: Int(x), y: y)
+      if let tmp = mp[z] {
+        #expect(tmp == z)
+      } else {
+        mp[z] = z
       }
     }
   }

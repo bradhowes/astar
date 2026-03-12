@@ -1,7 +1,7 @@
 // Copyright © 2025 Brad Howes. All rights reserved.
 
 /**
- A part of complete path that documents the location, how much it cost to enter, and the current
+ A part of the complete A\* path that documents the locations in the graph/map, how much it cost to enter, and the
  running cost for the path up to this point.
  */
 public struct Position<Location, Cost: NumericCost> {

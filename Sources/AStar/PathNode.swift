@@ -1,36 +1,30 @@
 // Copyright © 2020-2026 Brad Howes. All rights reserved.
 
 /**
- Helper class that keeps track of the costs involved in reaching a given position in the map. Maintains a linked list
- of nodes that make up a path to the starting position. Should be able to get away with a `struct` with some retooling of
- the linked list tracking.
+ Helper struct that keeps track of the costs involved in reaching a given position in the map. Maintains a linked list
+ of nodes that make up a path to the starting position.
  */
 internal struct PathNode<Location: Hashable, Cost: NumericCost> {
 
   /// Lcation of this node in a map
   let location: Location
 
-  /// The cost to enter this location.
-  let locationCost: Cost
+  /// The costs associated with entering this location from a path.
+  let visitCost: VisitCost<Cost>
 
-  enum ParentLink {
+  /// Known cost of the path to reach this node.
+  var knownCost: Cost { visitCost.bestKnownCost }
+
+  /// Current total cost of this node: `knownCost` + `visitCost.estimatedCost`. Although it can be calculated from other attributes,
+  /// it is used for ordering (see `PathNode/<` below) so held here for performance.
+  let totalCost: Cost
+
+  private enum ParentLink {
     indirect case parent(PathNode<Location, Cost>)
   }
 
   /// The link to the previous node in the path of nodes
-  private var parent: ParentLink?
-
-  /**
-   Known cost of the path to reach this node: ``parent.knownCost`` + ``positionCost``
-   */
-  private var knownCost: Cost = .zero
-
-  /**
-   Current total cost of this node: `knownCost` + last estimated cost.
-
-   This can change when revisiting the node using a less-costly path.
-   */
-  private var totalCost: Cost = .zero
+  private let parent: ParentLink?
 
   /**
    Create a new root node (one without a parent) and no cost info.
@@ -39,7 +33,9 @@ internal struct PathNode<Location: Hashable, Cost: NumericCost> {
    */
   init(location: Location) {
     self.location = location
-    self.locationCost = .zero
+    self.visitCost = .init()
+    self.totalCost = .zero
+    self.parent = nil
   }
 
   /**
@@ -50,38 +46,17 @@ internal struct PathNode<Location: Hashable, Cost: NumericCost> {
    - parameter heuristicRemaining: the estimated cost travelling to the goal position from this position
    - parameter parent: the parent node representing the path to this node
    */
-  init(location: Location, cost: Cost, estimatedCost: Cost, parent: PathNode) {
+  init(location: Location, visitCost: VisitCost<Cost>, parent: PathNode) {
     self.location = location
-    self.locationCost = cost
+    self.visitCost = visitCost
     self.parent = .parent(parent)
-    knownCost = locationCost + parent.knownCost
-    totalCost = knownCost + estimatedCost
-  }
-
-  /**
-   Compare the current cost to this node with the estimated cost via another node, and if cheaper move the node to
-   the new parent.
-
-   - parameter estimatedCost: the estimated cost travelling to the goal position
-   - parameter newParent: the Node to reparent if warranted.
-   - returns: self if reparenting took place, otherwise nil.
-   */
-  func reparentIfCheaper(newParent: PathNode) -> PathNode? {
-    if (newParent.knownCost + locationCost < knownCost) {
-      return .init(
-        location: location,
-        cost: locationCost,
-        estimatedCost: totalCost - knownCost,
-        parent: newParent
-      )
-    }
-    return nil
+    self.totalCost = visitCost.totalCost
   }
 
   /**
    Obtain the path from the first Node in the chain to this one.
 
-   - returns: collection of ``Position<CostType>`` values, ordered from start to end.
+   - returns: collection of ``Position<Location, Cost>`` values, ordered from start to end.
    */
   func path() -> [Position<Location, Cost>] {
     var paths: [Position<Location, Cost>] = []
@@ -96,12 +71,19 @@ extension PathNode {
     if case let .parent(link) = parent {
       link.addPath(&paths)
     }
-    paths.append(.init(location: location, locationCost: locationCost, runningCost: knownCost))
+    paths.append(.init(location: location, locationCost: visitCost.locationCost, runningCost: knownCost))
   }
 }
 
 extension PathNode {
 
-  // For use in `PriorityQueue`
+  /**
+   Define "less than" ordering between two `PathNode` instances. The `PathNode` does not have ``Orderable`` conformance, but
+   this operation is given to a ``PriorityQueue`` used in the A\* processing so that the lowest-cost node is always available.
+
+   - parameter left: the left-hand side of the comparison
+   - parameter right: the right-hand side of the comparison
+   - returns: true if left is less than right, otherwise false.
+   */
   static func < (left: PathNode, right: PathNode) -> Bool { left.totalCost < right.totalCost }
 }

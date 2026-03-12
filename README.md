@@ -7,13 +7,13 @@
 
 The AStar library implements the classic A* path-finding algorithm. It uses a min priority queue for managing potential
 paths, ordered by each path's known and estimated cost. The AStar class delegates map-related functionality to a
-`MapOracle` protocol to determine valid positions as well as the cost of using a position. Example of a `MapOracle` can
-be found in the `AStarTests.swift` file.
+`GraphOracle` protocol to determine valid positions as well as the cost of using a position. Example of a `GraphOracle`
+can be found in the `AStarTests.swift` file.
 
 The AStar API is very basic. There is just the static `find` method. Here is an example of it being used:
 
 ```swift
-let mapData = MapData(data: [
+let oracle = Oracle(data: [
     [.🌊, .🌲, .🌲, .🌲, .🚩, .🌲, .🌲, .🌲],
     [.🌊, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲, .🌲],
     [.🌲, .🌲, .🌲, .🌲, .🗻, .🌲, .🌲, .🌲],
@@ -26,19 +26,17 @@ let mapData = MapData(data: [
 
 let start = Coord2D(x: 4, y: 0) // location of 🚩 above
 let end = Coord2D(x: 4, y: 4)   // location of 🏁 above
-func distanceToEnd(position: Coord2D) -> Int { abs(position.x - end.x) + abs(position.y - end.y) }
 let path = AStar.find(
-  mapOracle: mapOracle, 
-  considerDiagonalPaths: true,
-  heuristicCostCalulator: distanceToEnd,
+  oracle: oracle, 
   start: start, 
   end: end
 )
 ```
 
-You supply something that implements the `MapOracle` protocol like the `MapData` above. You decide if diagonal paths are
-acceptable, and provide a way to estimate the cost of moving from a given point on the map to the end point (the
-_heuristic cost_). The start and end points complete the `find` request.
+You supply an entity `oracle` that implements the `GraphOracle` protocol like the `Oracle` above. The oracle provides
+information used by the A* algorithm to learn about the routes available from a location and the costs involved in
+picking one. The start and end points indicate where to start the path and the goal to reach with the lowest possible
+cost.
 
 You get back an optional array of `Position` values. If `nil` then there was no path to be found. Otherwise, the array
 will have the map coordinates and the costs of the path that was found, starting at `start` and ending with `end`.

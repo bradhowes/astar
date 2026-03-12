@@ -2,7 +2,7 @@
 import Foundation
 
 /**
- 2D map coordinate for a node in an A\* path that exists on an cartesian grid.
+ 2D map coordinate for a node in an A\* path that exists on a cartesian grid.
  */
 public struct Coord2D: Equatable, Hashable {
   public let x: Int
@@ -54,7 +54,6 @@ extension Coord2D {
     let dy = to.y - y
     return dx * dx + dy * dy
   }
-
 
   /**
    Calculate the distance to another location as the squared root of the sum of the deltas in the X and Y coordinates, or

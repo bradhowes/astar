@@ -1,7 +1,8 @@
 // Copyright © 2020-2026 Brad Howes. All rights reserved.
 
 /**
- Interface for a type that will hold the cost of an AStar node.
+ A representation of the cost of an A\* node, abstracted here to allow for integer an floating-point calculations. The A\*
+ algorithm does not need the specifics of how costs are stored, only how to order them and to create one with zero value.
  */
 public protocol NumericCost: SignedNumeric, Comparable {
 

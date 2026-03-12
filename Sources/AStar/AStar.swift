@@ -6,8 +6,10 @@ import PriorityQueue
  Contains the functionality for performing A\* path searches. There is only one public static method: `find` that sets up the
  environment and then performs the search.
 
- The `OracleType` generic parameter provides the `CostType` type that determines how costs are stored (Int, Float, etc.) and
- has a means to determine if a map location is visitable and how costly it is to do so.
+ The `Oracle` generic parameter provides the `CostType` type that determines how costs are stored (Int, Float, etc.) and
+ has a means to determine if a map location is visitable and how costly it is to do so. There is also `Location` associated type
+ in the `Oracle` that defines a unique value for elements in the graph/map that is being search. For a 2D grid, this would be
+ a type like ``Coor2D``.
  */
 public struct AStar<Oracle> where Oracle: GraphOracle {
 
@@ -18,10 +20,7 @@ public struct AStar<Oracle> where Oracle: GraphOracle {
   /**
    Attempt to find the lowest-cost path from start to end positions of a given map.
 
-   - parameter mapOracle: the map to to use for determining valid paths
-   - parameter considerDiagonalPaths: if true, allow traveling diagonally from one position to another
-   - parameter estimatedCostCalulator: function that returns the heuristic cost between a given position and the end goal. This is
-   separate from the `mapOracle` for convenience.
+   - parameter oracle: the oracle to to use for answering questions about the graph being investigated.
    - parameter start: the starting position in the map. If not valid, throws ``Failure.invalidStart``
    - parameter end: the end (goal) position in the map. If not valie, throws ``Failure.invalidEnd``. If same as ``start`` then
    throws ``Failure.sameStartEnd``.
@@ -29,7 +28,6 @@ public struct AStar<Oracle> where Oracle: GraphOracle {
    */
   public static func find(
     oracle: Oracle,
-    considerDiagonalPaths: Bool,
     start: Location,
     end: Location
   ) throws -> [Position<Location, Cost>]? {
@@ -39,34 +37,31 @@ public struct AStar<Oracle> where Oracle: GraphOracle {
 
     let node: Node = .init(location: start)
     var pendingQueue = PriorityQueue<Node>(compare: { $0 < $1 }, node)
-    var visitedCache: [Location: Node] = .init(dictionaryLiteral: (start, .init(location: start)))
+    var visitedCache: [Location: VisitCost<Cost>] = .init(dictionaryLiteral: (start, .init()))
 
+    // TODO: monitor progress to detect looping due to improper oracle responses
     while let best = pendingQueue.pop() {
       if best.location == end {
         return best.path()
       }
 
-      oracle.adjacentLocations(to: best.location, diagonals: considerDiagonalPaths).forEach { location in
-        let pending: Node?
-        if let visited = visitedCache[location] {
-
-          // Already visited location -- see if entering it would be cheaper now than it was before.
-          // Here, estimatedCost is the same as before; the only difference would be if the parent node cost is lower now.
-          pending = visited.reparentIfCheaper(newParent: best)
-        } else {
-
-          // Add new node to check.
-          pending = .init(
-            location: location,
-            cost: oracle.cost(location: location),
-            estimatedCost: oracle.estimatedCost(from: location, to: end),
-            parent: best
+      oracle.adjacentLocations(to: best.location).forEach { location in
+        let visited = visitedCache[location]
+        // swiftlint:disable:next force_unwrapping
+        if visited == nil || best.knownCost < visited!.bestPathCost {
+          let visitCost: VisitCost = .init(
+            locationCost: visited?.locationCost ?? oracle.cost(entering: location),
+            estimatedCost: visited?.estimatedCost ?? oracle.estimatedCost(from: location, to: end),
+            bestPathCost: best.knownCost
           )
-        }
-
-        if let pending {
-          visitedCache[location] = pending
-          pendingQueue.push(pending)
+          visitedCache[location] = visitCost
+          pendingQueue.push(
+            .init(
+              location: location,
+              visitCost: visitCost,
+              parent: best
+            )
+          )
         }
       }
     }
