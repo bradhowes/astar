@@ -30,7 +30,7 @@ func distanceToEnd(position: Coord2D) -> Int { abs(position.x - end.x) + abs(pos
 let path = AStar.find(
   mapOracle: mapOracle, 
   considerDiagonalPaths: true,
-  heuristicCostCalulator: distancToEnd,
+  heuristicCostCalulator: distanceToEnd,
   start: start, 
   end: end
 )
