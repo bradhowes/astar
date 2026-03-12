@@ -1,8 +1,7 @@
 // Copyright © 2020-2026 Brad Howes. All rights reserved.
 
 /**
- Interface for a type that will hold the cost of an AStar node. We need to be able to compare them and
- to represent a zero cost.
+ Interface for a type that will hold the cost of an AStar node.
  */
 public protocol NumericCost: SignedNumeric, Comparable {
 
@@ -16,7 +15,7 @@ public protocol NumericCost: SignedNumeric, Comparable {
    components (x, y), also known as the Pythagorean distance. However, in the case of A\* path calculations, taking the square root
    is not necessary. Alternatively, one could also just take the sum of the absolute values of the coordinate changes. This is
    known as the taxicab distance or Manhattan distance or rectilinear distance. It too is sufficient to be used for A\* path
-   calculations.
+   calculations and it is the default implementation when `distance` is not provided.
 
    - parameter from: the starting location.
    - parameter to: the ending location.
@@ -27,18 +26,18 @@ public protocol NumericCost: SignedNumeric, Comparable {
 
 extension Int: NumericCost {
   public static func distance(from: Coord2D, to: Coord2D) -> Self {
-    abs(to.x - from.x) + abs(to.y - from.y)
+    from.taxiDistance(to: to)
   }
 }
 
 extension Float: NumericCost {
   public static func distance(from: Coord2D, to: Coord2D) -> Self {
-    Self(abs(to.x - from.x) + abs(to.y - from.y))
+    Self(from.taxiDistance(to: to))
   }
 }
 
 extension Double: NumericCost {
   public static func distance(from: Coord2D, to: Coord2D) -> Self {
-    Self(abs(to.x - from.x) + abs(to.y - from.y))
+    Self(from.taxiDistance(to: to))
   }
 }

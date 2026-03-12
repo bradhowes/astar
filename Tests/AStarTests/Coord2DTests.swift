@@ -10,11 +10,11 @@ struct Coord2DTests {
   func addition() {
 
     let a = Coord2D(x: 1, y: 2)
-    let b = Coord2D(x: 3, y: 5)
+    let b = Offset2D(dx: 3, dy: 5)
     let c = a + b
 
-    #expect(c.x == a.x + b.x)
-    #expect(c.y == a.y + b.y)
+    #expect(c.x == a.x + b.dx)
+    #expect(c.y == a.y + b.dy)
   }
 
   @Test
@@ -43,5 +43,20 @@ struct Coord2DTests {
         mp[p] = p
       }
     }
+  }
+
+  @Test
+  func taxiDistance() {
+    #expect(Coord2D(x: 1, y: 2).taxiDistance(to: Coord2D(x: 3, y: 5)) == 2 + 3)
+  }
+
+  @Test
+  func distanceSquared() {
+    #expect(Coord2D(x: 1, y: 2).distanceSquared(to: Coord2D(x: 3, y: 5)) == 4 + 9)
+  }
+
+  @Test
+  func distance() {
+    #expect(Coord2D(x: 1, y: 2).distance(to: Coord2D(x: 3, y: 5)) == sqrt(4 + 9))
   }
 }
