@@ -7,10 +7,11 @@
 
 The AStar library implements the classic A* path-finding algorithm. It uses a min priority queue for managing potential
 paths, ordered by each path's known and estimated cost. The AStar class delegates map-related functionality to a
-`GraphOracle` protocol to determine valid positions as well as the cost of using a position. Example of a `GraphOracle`
-can be found in the `AStarTests.swift` file.
+`GraphOracle` protocol to determine valid locations as well as the cost of adding a location to a path candidate.
+Example of a `GraphOracle` can be found in the `AStarTests.swift` file.
 
-The AStar API is very basic. There is just the static `find` method. Here is an example of it being used:
+The AStar API is quite basic: there is just the static `find` method which provides the oracle to use, and the start
+and end locations for the path.
 
 ```swift
 let oracle = Oracle(data: [
@@ -38,8 +39,9 @@ information used by the A* algorithm to learn about the routes available from a 
 picking one. The start and end points indicate where to start the path and the goal to reach with the lowest possible
 cost.
 
-You get back an optional array of `Position` values. If `nil` then there was no path to be found. Otherwise, the array
-will have the map coordinates and the costs of the path that was found, starting at `start` and ending with `end`.
+You get back an optional array of `Position` values. If this is `nil` then there was no path to be found. 
+Otherwise, the array will have the map coordinates and their associated costs for the path that was found, 
+starting at `start` and ending with `end`.
 
 Here is the visual representation of the map with the found path. The starting position appears as a red flag (🚩) and
 the end position is a checkered flag (🏁). The path in between these two points contains an adventurer (🏃).
@@ -57,14 +59,14 @@ print(image)
 🌊🌲🌲🌲🌲🌲🗻🌲
 ```
 
-The map contains three different terrain elements, each with their own cost for travelling into their square:
+For this example, the map contains three different terrain elements, each with their own cost for travelling into their square:
 
 * 🌲 tree (1)
 * 🌊 water (2)
-* 🗻 boulder (∞)
+* 🗻 boulder (99)
 
-The algorithm minimizes the cost of traveling over terrain elements while at the same time trying to keep to the shortest path
-to the goal. For comparison, here is what the algorithm found when constrained to not use diagonal moves:
+The algorithm minimizes the cost of traveling over terrain elements while at the same time trying to keep to the shortest path.
+For comparison, here is what the algorithm finds when constrained to not use diagonal moves:
 
 ```swift
 🌊🌲🌲🌲🚩🌲🌲🌲
@@ -78,8 +80,9 @@ to the goal. For comparison, here is what the algorithm found when constrained t
 
 ```
 
-There is another path to the right that is also 16 moves, but it goes over two 🌊 positions which increases the total
-cost of the trip by 2. Thus the algorithm chose the one shown above.
+Note that this is not the only path to the flag in 16 moves -- there is another path to goes to the right but it goes over two 
+🌊 positions which increases the total cost of the route by 2. Thus the algorithm chose the one shown above due to the overal
+lower cost of the journey.
 
 ## Dependencies
 
