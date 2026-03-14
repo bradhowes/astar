@@ -71,6 +71,6 @@ extension Coord2D {
    */
   @inlinable
   public func distance(to: Coord2D) -> Float {
-    sqrt(Float(distanceSquared(to: to)))
+    Float(sqrt(Float(distanceSquared(to: to))))
   }
 }
