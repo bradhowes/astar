@@ -249,7 +249,7 @@ private struct AStarTests {
   @Test
   func invalidStart() throws {
     let start = Coord2D(x: -1, y: 0)
-    #expect(throws: AStarError.invalidStart) {
+    #expect(throws: AStar<MapOracle<Int>>.Failure.invalidStart) {
       try AStar<MapOracle<Int>>.find(
         oracle: mapOracle(),
         start: start,
@@ -260,7 +260,7 @@ private struct AStarTests {
 
   @Test
   func invalidEnd() throws {
-    #expect(throws: AStarError.invalidEnd) {
+    #expect(throws: AStar<MapOracle<Int>>.Failure.invalidEnd) {
       try AStar<MapOracle<Int>>.find(
         oracle: mapOracle(),
         start: start,
@@ -271,7 +271,7 @@ private struct AStarTests {
 
   @Test
   func sameStartEnd() throws {
-    #expect(throws: AStarError.sameStartEnd) {
+    #expect(throws: AStar<MapOracle<Int>>.Failure.sameStartEnd) {
       try AStar<MapOracle<Int>>.find(
         oracle: mapOracle(),
         start: start,

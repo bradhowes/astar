@@ -15,44 +15,52 @@
  search aspect of the A\* path building; they do not appear in the final path results.
  */
 public protocol GraphOracle {
+
+  /// The type that will is used to uniquely identify a position in the graph/map managed by the oracle.
   associatedtype Location: Hashable
+  /// The type that will hold the various costs calculated during the path search.
   associatedtype Cost: NumericCost
 
   /**
    Determine if the given location can be part of a path.
 
-   - parameter location: the location to check
-   - returns: `true` if so
+   - Parameter location: the location to check
+   - Returns: `true` if so
    */
   func canVisit(location: Location) -> Bool
 
   /**
    Obtain a collection of positions next to the given one to be considered for adding to the optimal path. Note that only points
-   that pass `canVisit` should be included.
+   that pass ``canVisit(location:)`` should be included.
 
-   - parameter location: the location to work with.
-   - returns: collection of `Location` values that are connected to the given location.
+   - Parameter location: the location to work with.
+   - Returns: collection of `Location` values that are connected to the given location.
    */
   func adjacentLocations(to location: Location) -> [Location]
 
   /**
    Determine the cost of the given position when added to the path. This is the real cost of the location, not an estimated one.
 
-   - parameter location: the location to check
-   - returns: cost to enter the position
+   - Parameter location: the location to check
+   - Returns: cost to enter the position
    */
   func cost(entering location: Location) -> Cost
 
   /**
    Determine an estimated cost for moving from one location to another. It should remain the same when called with the same
    coordinates, and it should not include any physical costs associated with specific locations between the coordinates. For a grid
-   map, the fastest estimate is to use ``Coord2D/taxiDistance``
+   map, the fastest estimate would be to use ``Coord2D/taxiDistance(to:)``
+
+   - Parameter from: the location to start at
+   - Parameter to: the location to end at
+   - Returns: a heuristic that represents the cost of moving from `from` to `to`.
    */
   func estimatedCost(from: Location, to: Location) -> Cost
 }
 
 extension GraphOracle where Location == Coord2D {
 
+    /// Implementation of ``estimatedCost(from:to:)`` used when the `Location` associated type is ``Coord2D``.
   public func estimatedCost(from: Location, to: Location) -> Cost {
     Cost.distance(from: from, to: to)
   }
