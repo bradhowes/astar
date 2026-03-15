@@ -16,7 +16,7 @@ API Documentation: [AStar](https://swiftpackageindex.com/bradhowes/astar/main/do
 ## Example
 
 The AStar API is quite basic: there is just the static 
-[find](blob/main/Sources/AStar/AStar.swift#L47) method which provides the 
+[find](Sources/AStar/AStar.swift#L47) method which provides the 
 oracle to use, and the start and end locations for the path.
 
 ```swift
