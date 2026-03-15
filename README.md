@@ -40,12 +40,12 @@ let path = AStar.find(
 )
 ```
 
-You supply an entity `oracle` that implements the `GraphOracle` protocol like the `Oracle` above. The oracle provides
+You supply an `oracle` entity that implements the `GraphOracle` protocol like the `Oracle` above. The oracle provides
 information used by the A* algorithm to learn about the routes available from a location and the costs involved in
 picking one. The start and end points indicate where to start the path and the goal to reach with the lowest possible
 cost.
 
-You get back an optional array of `Position` values. If this is `nil` then there was no path to be found. 
+You get back an optional array of [Position](Sources/AStar/Position.swift) values. If this is `nil` then no path was found. 
 Otherwise, the array will have the map coordinates and their associated costs for the path that was found, 
 starting at `start` and ending with `end`.
 
