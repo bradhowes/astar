@@ -7,11 +7,17 @@
 
 The AStar library implements the classic A* path-finding algorithm. It uses a min priority queue for managing potential
 paths, ordered by each path's known and estimated cost. The AStar class delegates map-related functionality to a
-`GraphOracle` protocol to determine valid locations as well as the cost of adding a location to a path candidate.
-Example of a `GraphOracle` can be found in the `AStarTests.swift` file.
+[GraphOracle](Sources/AStar/GraphOracle.swift) protocol to determine valid locations as well as the cost of adding a 
+location to a path candidate. An example of a `GraphOracle` can be found in the 
+[AStarTests.swift](Tests/AStarTests/AStarTests.swift) file.
 
-The AStar API is quite basic: there is just the static `find` method which provides the oracle to use, and the start
-and end locations for the path.
+API Documentation: [AStar](https://swiftpackageindex.com/bradhowes/astar/main/documentation/astar)
+
+## Example
+
+The AStar API is quite basic: there is just the static 
+[find](blob/main/Sources/AStar/AStar.swift#L47) method which provides the 
+oracle to use, and the start and end locations for the path.
 
 ```swift
 let oracle = Oracle(data: [
