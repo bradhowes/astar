@@ -1,7 +1,7 @@
-[![](https://github.com/bradhowes/astar/workflows/CI/badge.svg)]()
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/bradhowes/astar)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/bradhowes/astar)
-[![License: MIT][mit]][license]
+[![CI][status]][ci]
+[![][spiv]][spi]
+[![][spip]][spi]
+[![][mit]][license]
 
 # AStar - an A* Library in Swift
 
@@ -11,7 +11,7 @@ paths, ordered by each path's known and estimated cost. The AStar class delegate
 location to a path candidate. An example of a `GraphOracle` can be found in the 
 [AStarTests.swift](Tests/AStarTests/AStarTests.swift) file.
 
-API Documentation: [AStar](https://swiftpackageindex.com/bradhowes/astar/main/documentation/astar)
+API Documentation: [AStar][doc]
 
 ## Example
 
@@ -95,5 +95,11 @@ lower cost of the journey.
 This package relies on the [PriorityQueue](https://github.com/bradhowes/PriorityQueue) package for Swift that provides a
 min/max ordering of items using a binary heap.
 
+[doc]: https://swiftpackageindex.com/bradhowes/astar/main/documentation/astar
+[ci]: https://github.com/bradhowes/astar/actions/workflows/CI.yml
+[status]: https://github.com/bradhowes/astar/workflows/CI/badge.svg
+[spi]: https://swiftpackageindex.com/bradhowes/astar
+[spiv]: https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dswift-versions
+[spip]: https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbradhowes%2Fastar%2Fbadge%3Ftype%3Dplatforms
 [mit]: https://img.shields.io/badge/License-MIT-A31F34.svg
 [license]: https://opensource.org/licenses/MIT
